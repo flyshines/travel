@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="qingning.dbcommon.mybatis.persistence.CoursesMapper" >
+  
+  <!-- *****************sql片段****************** -->
+  <sql id="where_position_sql">
+  	<if test="position != null and position != 0">
+     	and position <![CDATA[ < ]]> #{position}
+     </if>
+  </sql>
+  <!-- *****************sql片段****************** -->
+  
+  <!-- 分页获取课程列表 -->
+  <select id="selectCourseList" resultType="hashmap" parameterType="hashmap" >
+     select * from t_course where status = 0
+     <include refid="where_position_sql"></include>
+     order by position desc
+     <if test="page_count != null">
+     	limit #{page_count}
+     </if>
+  </select>
+  
+  <!-- 获取推荐课程列表 -->
+  <select id="selectTjCourseList" resultType="hashmap" parameterType="hashmap" >
+     select * from t_course where status = 0
+     order by buy_times desc
+     <if test="page_count != null">
+     	limit #{page_count}
+     </if>
+  </select>
+  
+  <!-- 根据id获取课程详情 -->
+  <select id="selectCourseById" resultType="hashmap" parameterType="java.lang.String" >
+    select * from t_course where course_id = #{courseId} and status = 0
+  </select>
+  
+  <!-- 分页获取课程素材或发现列表，并关联查询课程信息 -->
+  <select id="selectCoursePosterList" resultType="hashmap" parameterType="hashmap" >
+     select * from t_course_poster poster
+     LEFT JOIN t_course course ON course.course_id = poster.course_id
+     <where>
+     	<if test="course_id != null and course_id != ''">
+     		<!-- 获取指定课程的素材 -->
+     		and poster.course_id = #{course_id}
+     	</if>
+     	<if test="position != null and position != 0">
+	     	and poster.position <![CDATA[ < ]]> #{position}
+	     </if>
+     </where>
+     order by poster.position desc
+     <if test="page_count != null">
+     	limit #{page_count}
+     </if>
+  </select>
+  
+  <!-- 获取轮播列表 -->
+  <select id="selectCarouselList" resultType="hashmap" parameterType="hashmap">
+  	SELECT * 
+	FROM t_carousel
+	WHERE `status` = #{status}
+	ORDER BY position DESC
+	LIMIT #{page_count}
+  </select>
+  
+</mapper>

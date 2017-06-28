@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="qingning.dbcommon.mybatis.persistence.TradeBillMapper" >
+   <select id="findMyCostList" resultType="hashmap" parameterType="hashmap" >
+	SELECT payment,create_time,remark as consumer_behavior,shop_name,position from t_trade_bill where user_id = #{user_id}
+ 	<if test="position != null and position > 0">
+		and position <![CDATA[ < ]]> #{position} 
+ 	</if>
+  	order by position desc limit #{page_count}
+  </select>
+
+  <insert id="insertTradeBill" parameterType="hashmap" >
+    insert into t_trade_bill
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="trade_id != null" >
+        trade_id,
+      </if>
+      <if test="profit_type != null">
+      	profit_type,
+      </if>
+      <if test="user_id != null" >
+        user_id,
+      </if>
+      <if test="shop_id != null" >
+        shop_id,
+      </if>
+      <if test="course_id != null" >
+        course_id,
+      </if>
+      <if test="amount != null" >
+        amount,
+      </if>
+      <if test="payment != null" >
+        payment,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="create_time != null" >
+        create_time,
+      </if>
+      <if test="update_time != null" >
+        update_time,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="shop_name != null" >
+        shop_name,
+      </if>
+      <if test="invite_code != null" >
+        invite_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="trade_id != null" >
+        #{trade_id},
+      </if>
+      <if test="profit_type != null">
+      	#{profit_type},
+      </if>
+      <if test="user_id != null" >
+        #{user_id},
+      </if>
+      <if test="shop_id != null" >
+        #{shop_id},
+      </if>
+      <if test="course_id != null" >
+        #{course_id},
+      </if>
+      <if test="amount != null" >
+        #{amount},
+      </if>
+      <if test="payment != null" >
+        #{payment},
+      </if>
+      <if test="status != null" >
+        #{status},
+      </if>
+      <if test="create_time != null" >
+        #{create_time},
+      </if>
+      <if test="update_time != null" >
+        #{update_time},
+      </if>
+      <if test="remark != null" >
+        #{remark},
+      </if>
+      <if test="shop_name != null" >
+        #{shop_name},
+      </if>
+      <if test="invite_code != null" >
+        #{invite_code},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateTradeBill" parameterType="hashmap" >
+    update t_trade_bill
+    <set >
+      <if test="user_id != null" >
+        user_id = #{user_id},
+      </if>
+      <if test="room_id != null" >
+        room_id = #{room_id},
+      </if>
+      <if test="course_id != null" >
+        course_id = #{course_id},
+      </if>
+      <if test="amount != null" >
+        amount = #{amount},
+      </if>
+      <if test="payment != null" >
+        payment = #{payment},
+      </if>
+      <if test="status != null" >
+        status = #{status},
+      </if>
+      <if test="profit_type != null" >
+        profit_type = #{profit_type},
+      </if>
+      <if test="close_reason != null" >
+        close_reason = #{close_reason},
+      </if>
+      <if test="close_time != null" >
+        close_time = #{close_time},
+      </if>
+      <if test="create_time != null" >
+        create_time = #{create_time},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{update_time},
+      </if>
+    </set>
+    where trade_id = #{trade_id,jdbcType=VARCHAR}
+    <if test="status != null" >
+        and status != #{status}
+    </if>
+    <if test="last_update_time != null" >
+       and update_time=#{last_update_time}
+    </if>
+  </update>
+
+  <select id="findByOutTradeNo" resultType="hashmap" parameterType="java.lang.String" >
+    select * from t_trade_bill where trade_id = #{outTradeNo}
+  </select>
+  
+  <!-- 获取指定用户消费的指定课程详情 -->
+  <select id="selectBillByUserIdAndCourseId" resultType="hashmap">
+  	select * from t_trade_bill where user_id = #{userId} and course_id = #{courseId} and status = 2
+  </select>
+  
+  <!-- 获取登录用户购买的指定类型课程id集合 -->
+  <select id="selectMyCourseIdList" resultType="string" parameterType="hashmap">
+  	select bill.course_id from t_trade_bill bill
+  	left join t_course course on course.course_id = bill.course_id
+  	where bill.user_id = #{user_id}
+  		and bill.profit_type = 0	<!-- 消费类型为课程 -->
+  		and bill.status = 2	<!-- 消费状态为已完成 -->
+  	<if test="course_type != null">	<!-- 授课类型 -->
+  		and course.course_type = #{course_type}
+  	</if>
+  	order by bill.position desc
+  </select>
+  
+</mapper>
