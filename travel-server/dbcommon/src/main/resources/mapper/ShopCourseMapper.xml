@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="qingning.dbcommon.mybatis.persistence.ShopCourseMapper" >
+	<!-- 分页获取店铺课程列表，并关联查询出课程信息 -->
+	<select id="selectShopCourseList" resultType="hashmap" parameterType="hashmap">
+		SELECT * FROM t_shop_course shop_course
+		LEFT JOIN t_course course ON course.course_id = shop_course.course_id
+		<where>
+			shop_course.shop_id = #{shop_id}
+			AND shop_course.`status` = 0
+			<if test="page_count != null and page_count != 0"><!-- 当值为0时，返回所有课程 -->
+				<if test="position != null and position != 0">
+					AND shop_course.`position` <![CDATA[ < ]]> #{position}
+				</if>
+			</if>
+		</where>
+		ORDER BY shop_course.`position` DESC
+		<if test="page_count != null and page_count != 0">
+	      LIMIT #{page_count}
+	    </if>
+	</select>
+	
+	<!-- 根据条件获取店铺课程记录 -->
+	<select id="selectShopCourse" resultType="hashmap" parameterType="hashmap">
+		SELECT * FROM t_shop_course shop_course
+		<where>
+			<if test="shop_id != null">
+				and shop_course.shop_id = #{shop_id}
+			</if>
+			<if test="course_id != null">
+				and shop_course.course_id = #{course_id}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 获取店铺课程id集合 -->
+	<select id="selectShopCourseIdList" resultType="string" parameterType="hashmap">
+		SELECT shop_course.course_id FROM t_shop_course shop_course
+		WHERE shop_course.shop_id = #{shop_id} AND shop_course.`status` = 0
+	</select>
+	
+	<!-- 分页获取店铺课程销售记录列表 -->
+	<select id="selectCourseSaleList" resultType="hashmap" parameterType="hashmap">
+	   SELECT course_sale.*
+	   FROM t_course_sale course_sale
+	   <where>
+	   	course_sale.shop_id = #{shop_id}
+	   	<if test="position != null and position != 0">
+	    	and course_sale.position <![CDATA[ < ]]> #{position}
+	    </if>
+	    <if test="shop_customer_id != null">
+	    	and course_sale.shop_customer_id = #{shop_customer_id}
+	    </if>
+	   </where>
+	   order by course_sale.position desc
+	   <if test="page_count != null">
+	   	limit #{page_count}
+	   </if>
+	</select>
+	
+	<!-- 上架课程 -->
+    <insert id="insertShopCourse" parameterType="hashmap">
+        INSERT INTO t_shop_course(shop_course_id, shop_id, course_id, sale_num, `status`) 
+        VALUES(#{shop_course_id}, #{shop_id}, #{course_id}, #{sale_num}, #{status})
+    </insert>
+
+	<update id="updateShopCourseNum" parameterType="hashmap" >
+	  update t_shop_course set sale_num=sale_num+1 where shop_id = #{shop_id} and course_id=#{course_id}
+	</update>
+	
+	<!-- 更新店铺课程信息 -->
+    <update id="updateShopCourse" parameterType="hashmap">
+        UPDATE t_shop_course SET `status` = #{status}
+        WHERE shop_course_id = #{shop_course_id}
+    </update>
+
+</mapper>

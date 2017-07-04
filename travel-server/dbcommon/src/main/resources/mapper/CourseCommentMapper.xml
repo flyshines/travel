@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="qingning.dbcommon.mybatis.persistence.CourseCommentMapper" >
+
+	<!-- 分页获取该课程的评论列表，关联查询出用户信息 -->
+	<select id="selectCommentListByCourseId" resultType="hashmap" parameterType="hashmap">
+		SELECT * FROM t_course_comment `comment`
+		LEFT JOIN t_user `user` ON `user`.user_id = `comment`.user_id
+		<where>
+			`comment`.course_id = #{course_id}
+			<if test="position != null and position != 0">
+				AND `comment`.position <![CDATA[ < ]]> #{position}
+			</if>
+			AND `comment`.`status` = 0
+		</where>
+		ORDER BY `comment`.position desc
+		<if test="page_count != null">
+	     	limit #{page_count}
+	     </if>
+	</select>
+	
+	<!-- 插入一条课程评论 -->
+	<insert id="insertCourseComment" parameterType="hashmap">
+		INSERT INTO `t_course_comment` (`course_id`, `comment_id`, `user_id`, `content`, `create_time`, `position`) 
+		VALUES (#{course_id}, #{comment_id}, #{user_id}, #{content}, #{create_time}, #{status});
+	</insert>
+</mapper>

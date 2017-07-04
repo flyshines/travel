@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="qingning.dbcommon.mybatis.persistence.DistributerProfitMapper" >
+    <insert id="insertDistributerProfit" parameterType="hashmap" >
+        insert into t_distributer_profit
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="profit_id != null" >
+                profit_id,
+            </if>
+            <if test="user_id != null" >
+                user_id,
+            </if>
+            <if test="trade_id != null" >
+                trade_id,
+            </if>
+            <if test="profit_type != null" >
+                profit_type,
+            </if>
+            <if test="money != null" >
+                money,
+            </if>
+            <if test="former_balance != null" >
+                sale_income_total,
+            </if>
+            <if test="former_balance != null" >
+                customer_offer,
+            </if>
+            <if test="later_balance != null" >
+                later_balance,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="profit_id != null" >
+                #{profit_id},
+            </if>
+            <if test="user_id != null" >
+                #{user_id},
+            </if>
+            <if test="trade_id != null" >
+                #{trade_id},
+            </if>
+            <if test="profit_type != null" >
+                #{profit_type},
+            </if>
+            <if test="money != null" >
+                #{money},
+            </if>
+            <if test="former_balance != null" >
+                #{sale_income_total},
+            </if>
+            <if test="former_balance != null" >
+                #{customer_offer},
+            </if>
+            <if test="later_balance != null" >
+                #{later_balance},
+            </if>
+        </trim>
+    </insert>
+</mapper>
