@@ -35,13 +35,6 @@ public class UserCommonServerImpl extends AbstractQNLiveServer {
     private ReadShopStatisticsOperation readShopStatisticsOperation;
     private ReadCourseOperation readCourseOperation;
 
-    private ReadDistributerOperation readDistributerOperation;
-    private ReadLiveRoomOperation readLiveRoomOperation;
-    private ReadAppVersionOperation readAPPVersionOperation;
-    private ReadRoomDistributer readRoomDistributer;
-    private ReadForceVersionOperation readForceVersionOperation;
-    private ReadLecturerOperation readLecturerOperation;
-    private ReadRoomDistributerOperation readRoomDistributerOperation;
     @Override
     public void initRpcServer() {
         if (userCommonModuleServer == null) {
@@ -50,20 +43,6 @@ public class UserCommonServerImpl extends AbstractQNLiveServer {
             readShopStatisticsOperation = new ReadShopStatisticsOperation(userCommonModuleServer);
             readCourseOperation = new ReadCourseOperation(userCommonModuleServer);
 
-            // readUserOperation = new
-            // ReadUserOperation(userCommonModuleServer);
-            // readLiveRoomOperation = new
-            // ReadLiveRoomOperation(commonModuleServer);
-            // readRoomDistributer = new
-            // ReadRoomDistributer(commonModuleServer);
-            // readAPPVersionOperation = new
-            // ReadAppVersionOperation(commonModuleServer);
-            // readForceVersionOperation = new
-            // ReadForceVersionOperation(commonModuleServer);
-            // readLecturerOperation = new
-            // ReadLecturerOperation(commonModuleServer);
-            // readRoomDistributerOperation = new
-            // ReadRoomDistributerOperation(commonModuleServer);
         }
     }
     private static Auth auth;
@@ -400,15 +379,6 @@ public class UserCommonServerImpl extends AbstractQNLiveServer {
                 if (count < 1) {
                     throw new QNLiveException("000104");
                 } else {
-                    // 更新分销者二维码
-                    if (rq_card_address != null) {
-                        parameters.put("rq_card_address", rq_card_address);
-                        count = userCommonModuleServer.updateDistributerInfo(parameters);
-                        if (count < 1) {
-                            throw new QNLiveException("000104");
-                        }
-                    }
-
                     // 更新用户信息缓存
                     Map<String, Object> parameter = new HashMap<String, Object>();
                     parameter.put(Constants.CACHED_KEY_USER_FIELD, userId);

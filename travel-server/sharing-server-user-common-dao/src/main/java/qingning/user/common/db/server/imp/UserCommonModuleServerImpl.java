@@ -54,11 +54,6 @@ public class UserCommonModuleServerImpl implements IUserCommonModuleServer {
 		return null;
 	}
 
-	public Map<String, Object> findLectureByLectureId(String lecture_id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public Map<String, Object> findLoginInfoByUserId(String user_id) {
 		return loginInfoMapper.findLoginInfoByUserId(user_id);
 	}
@@ -66,11 +61,6 @@ public class UserCommonModuleServerImpl implements IUserCommonModuleServer {
 
 	public Map<String, Object> findCourseByCourseId(String courseId) {
 		return courseMapper.findCourseByCourseId(courseId);
-	}
-
-	public Map<String, Object> findRewardInfoByRewardId(String reward_id) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public void closeTradeBill(Map<String, Object> failUpdateMap) {
@@ -81,151 +71,17 @@ public class UserCommonModuleServerImpl implements IUserCommonModuleServer {
        return paymentBillMapper.insertPaymentBill(insertPayMap);
 	}
 
-	public boolean isTradebillFinish(String outTradeNo) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	public Map<String, Object> handleWeixinPayResult(Map<String, Object> requestMapData) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Map<String, Object> findByDistributerId(String distributer_id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<Map<String, Object>> findDistributionInfoByDistributerId(Map<String, Object> parameters) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<Map<String, Object>> findRoomDistributerRecommendInfo(Map<String, Object> parameters) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<Map<String, Object>> findRoomDistributerCourseInfo(Map<String, Object> parameters) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<Map<String, Object>> findCourseWithRoomDistributerCourseInfo(Map<String, Object> parameters) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<Map<String, Object>> findRoomDistributerCourseDetailsInfo(Map<String, Object> parameters) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Map<String, Object> findLiveRoomByRoomId(String room_id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Map<String, Object> findRoomDistributerRecommendAllInfo(Map<String, Object> queryMap) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void insertRoomDistributerRecommend(Map<String, Object> insertMap) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public Map<String, Object> findRoomDistributionInfoByDistributerId(Map<String, Object> queryMap) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void updateAfterStudentBuyCourse(Map<String, Object> updateCourseMap) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void insertFeedback(Map<String, Object> reqMap) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public Map<String, Object> findRewardByUserIdAndCourseId(Map<String, Object> rewardQueryMap) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Map<String, Object> findVersionInfoByOS(String plateform) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Map<String, Object> findAvailableRoomDistributer(Map<String, Object> record) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Map<String, Object> findForceVersionInfoByOS(String force_version_key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Integer updateIMAccount(Map<String, Object> updateIMAccountMap) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Map<String, Object> findUserDistributionInfo(Map<String, Object> queryuserDistribution) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<Map<String, Object>> findcourseRecommendUsers(Map<String, Object> reqMap) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Map<String, Object> findCourseRecommendUserNum(Map<String, Object> reqMap) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Map<String, Object> findRoomDistributerRecommendItem(Map<String, Object> queryMap) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void updateRoomDistributerRecommend(Map<String, Object> insertMap) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public List<Map<String, Object>> findRoomRecommendUserList(Map<String, Object> reqMap) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<Map<String, Object>> findDistributionRoomDetailList(Map<String, Object> reqMap) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Map<String, Object> findDistributionRoomDetail(Map<String, Object> reqMap) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	public List<Map<String, Object>> findCourseIdByStudent(Map<String, Object> reqMap) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Map<String, Object> findCoursesSumInfo(Map<String, Object> queryMap) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 
 	public void updateUserWebOpenIdByUserId(Map<String, Object> updateMap) {
 		Map<String,Object> record = new HashMap<String,Object>();
@@ -302,13 +158,9 @@ public class UserCommonModuleServerImpl implements IUserCommonModuleServer {
 		return resultMap;
 	}
 
+
 	public int updateUserCommonInfo(Map<String, Object> parameters) {
 		return userMapper.updateUser(parameters);
-	}
-
-	@Override
-	public int updateDistributerInfo(Map<String, Object> parameters) {
-		return userMapper.updateDistributer(parameters);
 	}
 
 	@Override

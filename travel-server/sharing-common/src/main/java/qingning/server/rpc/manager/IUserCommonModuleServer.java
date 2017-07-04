@@ -9,26 +9,23 @@ import qingning.common.entity.RequestEntity;
 public interface IUserCommonModuleServer {
 	
 	
-	public List<Map<String, Object>> getServerUrls();
+	List<Map<String, Object>> getServerUrls();
 
 	Map<String,Object> getLoginInfoByLoginIdAndLoginType(Map<String, Object> reqMap);
 
 	Map<String,String> initializeRegisterUser(Map<String, Object> reqMap);
 
-	Map<String,Object> findLectureByLectureId(String lecture_id);
-	
+
 	Map<String,Object> findLoginInfoByUserId(String user_id);
 
 	Map<String,Object> findUserInfoByUserId(String user_id);
 
 	Map<String,Object> findCourseByCourseId(String courseId);
 
-	Map<String,Object> findRewardInfoByRewardId(String reward_id);
 
 	void closeTradeBill(Map<String, Object> failUpdateMap);
 
 
-	boolean isTradebillFinish(String outTradeNo);
 
 	void updateUserWebOpenIdByUserId(Map<String, Object> updateMap);
 
@@ -36,84 +33,33 @@ public interface IUserCommonModuleServer {
 
 	Map<String,Object> handleWeixinPayResult(Map<String, Object> requestMapData) throws Exception;
 	
-	Map<String,Object> findByDistributerId(String distributer_id);
-	
-	List<Map<String,Object>> findDistributionInfoByDistributerId(Map<String, Object> parameters);
-	List<Map<String,Object>> findRoomDistributerRecommendInfo(Map<String, Object> parameters);
-	List<Map<String,Object>> findRoomDistributerCourseInfo(Map<String, Object> parameters);
-	List<Map<String,Object>> findCourseWithRoomDistributerCourseInfo(Map<String, Object> parameters);
-	List<Map<String,Object>> findRoomDistributerCourseDetailsInfo(Map<String, Object> parameters);
-	
+
+
 	int updateUserCommonInfo(Map<String, Object> parameters);
 
 
-	Map<String,Object> findLiveRoomByRoomId(String room_id);
 
-	Map<String,Object> findRoomDistributerRecommendAllInfo(Map<String, Object> queryMap);
-
-	void insertRoomDistributerRecommend(Map<String, Object> insertMap);
-
-	Map<String,Object> findRoomDistributionInfoByDistributerId(Map<String, Object> queryMap);
-
-	//void increteRecommendNumForRoomDistributer(Map<String, Object> updateMap);
-
-	void updateAfterStudentBuyCourse(Map<String, Object> updateCourseMap);
-
-	void insertFeedback(Map<String, Object> reqMap);
-
-	Map<String,Object> findRewardByUserIdAndCourseId(Map<String, Object> rewardQueryMap);
-
-	Map<String,Object> findVersionInfoByOS(String plateform);
-	Map<String,Object> findAvailableRoomDistributer(Map<String, Object> record);
-	Map<String,Object> findForceVersionInfoByOS(String force_version_key);
-
-	Integer updateIMAccount(Map<String, Object> updateIMAccountMap);
-
-	Map<String,Object> findUserDistributionInfo(Map<String, Object> queryuserDistribution);
-
-	List<Map<String,Object>> findcourseRecommendUsers(Map<String, Object> reqMap);
-
-	Map<String,Object> findCourseRecommendUserNum(Map<String, Object> reqMap);
-
-	Map<String,Object> findRoomDistributerRecommendItem(Map<String, Object> queryMap);
-
-	void updateRoomDistributerRecommend(Map<String, Object> insertMap);
-
-	List<Map<String,Object>> findRoomRecommendUserList(Map<String, Object> reqMap);
-
-	List<Map<String,Object>> findDistributionRoomDetailList(Map<String, Object> reqMap);
-	
-	Map<String,Object> findDistributionRoomDetail(Map<String, Object> reqMap);
-	
 	List<Map<String,Object>> findCourseIdByStudent(Map<String, Object> reqMap);
 	
-	Map<String,Object> findCoursesSumInfo(Map<String, Object> queryMap);
-	
-	/**
-	 * 更新分销者基本信息
-	 * @param parameters
-	 * @return
-	 */
-	public int updateDistributerInfo(Map<String, Object> parameters);
 
 	/**
 	 * 获取店铺统计信息
 	 * @return
 	 */
-	public Map<String, Object> findShopStatisticsByUserId(String user_id);
+	Map<String, Object> findShopStatisticsByUserId(String user_id);
 
 	/**
 	 * 获取我购买的课程信息
 	 * @return
 	 */
-	public List<Map<String,Object>> findCourseSaleList(Map<String, Object> parameters);
+	List<Map<String,Object>> findCourseSaleList(Map<String, Object> parameters);
 
 	/**
 	 * 获取我的消费记录
 	 * @param reqMap
 	 * @return
 	 */
-	public List<Map<String, Object>> findMyCostList(Map<String, Object> reqMap);
+	List<Map<String, Object>> findMyCostList(Map<String, Object> reqMap);
 	
 	/**
 	 * 插入新的交易信息
@@ -127,7 +73,7 @@ public interface IUserCommonModuleServer {
 	 * @param reqMap
 	 * @return
 	 */
-	public int feedback(Map<String, Object> reqMap);
+	int feedback(Map<String, Object> reqMap);
 
 	/**
 	 * 根据config_key列表获取系统配置
@@ -277,8 +223,7 @@ public interface IUserCommonModuleServer {
 	Map<String,Object> findByPhone(String phone);
 
 	/**更新用户手机号码
-	 * @param userId
-	 * @param phone
+	 * @param userMap
 	 * @return
 	 */
 	public int updateUserPhone(Map<String, Object> userMap);

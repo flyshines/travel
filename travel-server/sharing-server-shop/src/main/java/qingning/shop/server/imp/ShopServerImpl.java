@@ -1,29 +1,12 @@
 package qingning.shop.server.imp;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.util.CollectionUtils;
-
 import qingning.common.entity.QNLiveException;
 import qingning.common.entity.RequestEntity;
-import qingning.common.entity.TemplateData;
 import qingning.common.util.*;
 import qingning.server.AbstractQNLiveServer;
-import qingning.server.JedisBatchCallback;
-import qingning.server.JedisBatchOperation;
 import qingning.server.annotation.FunctionName;
 import qingning.server.rpc.manager.IShopModuleServer;
-import qingning.server.rpc.manager.IUserDistributerModuleServer;
 import qingning.shop.server.other.*;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
-import redis.clients.jedis.Response;
-import redis.clients.jedis.Tuple;
-
-import java.text.DecimalFormat;
 import java.util.*;
 
 public class ShopServerImpl extends AbstractQNLiveServer {
