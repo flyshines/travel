@@ -1,26 +1,15 @@
 
 package qingning.shop.db.server.imp;
 
-
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 
-import qingning.common.entity.QNLiveException;
-import qingning.common.util.MiscUtils;
-import qingning.dbcommon.mybatis.persistence.CoursesMapper;
-import qingning.dbcommon.mybatis.persistence.DistributerMapper;
-import qingning.dbcommon.mybatis.persistence.LecturerMapper;
-import qingning.dbcommon.mybatis.persistence.LoginInfoMapper;
 import qingning.dbcommon.mybatis.persistence.ShopCourseMapper;
 import qingning.dbcommon.mybatis.persistence.ShopMapper;
 import qingning.dbcommon.mybatis.persistence.ShopStatisticsMapper;
-import qingning.dbcommon.mybatis.persistence.UserMapper;
 import qingning.server.rpc.manager.IShopModuleServer;
 
 public class ShopModuleServerImpl implements IShopModuleServer {
