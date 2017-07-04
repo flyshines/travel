@@ -7,14 +7,14 @@
   <packaging>pom</packaging>
   
   <modules>
-    <module>sharing-common</module>
-  	<module>sharing-dbcommon</module>
-    <module>sharing-server-user-common</module>
-    <module>sharing-server-user-common-dao</module>
+    <module>common</module>
+  	<module>dbcommon</module>
+    <module>server-user-common-api</module>
+    <module>server-user-common-dao</module>
   	<!--<module>sharing-server-course</module>
     <module>sharing-server-course-dao</module>-->
-    <module>sharing-server-shop</module>
-    <module>sharing-server-shop-dao</module>
+    <module>server-shop-api</module>
+    <module>server-shop-dao</module>
     <!--<module>sharing-server-user-distributer</module>
     <module>sharing-server-user-distributer-dao</module>-->
     <!--<module>sharing-server-mq</module>-->
