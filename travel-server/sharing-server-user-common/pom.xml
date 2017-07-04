@@ -1,41 +1,43 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>sharing.server</groupId>
-    <artifactId>sharing-server</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
-  <groupId>sharing.server.user.common</groupId>
-  <artifactId>sharing-server-user-common</artifactId>
-  <packaging>war</packaging>
-  
-  <dependencies>
-	<dependency>
-		<groupId>sharing.common</groupId>
-		<artifactId>sharing-common</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</dependency>
-  </dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>sharing.server</groupId>
+        <artifactId>sharing-server</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <groupId>sharing.server.user.common</groupId>
+    <artifactId>sharing-server-user-common</artifactId>
+    <packaging>war</packaging>
 
-  <build>
-	<finalName>sharing-server-user-common</finalName>
-	<plugins> 
-	  <plugin>
-	  	<groupId>org.apache.maven.plugins</groupId> 
-	    <artifactId>maven-war-plugin</artifactId>
-	    <version>2.6</version>
-		  <configuration>
-	  	  <failOnMissingWebXml>false</failOnMissingWebXml>
-	  	  <outputDirectory>E:\tomcat8-9999\webapps</outputDirectory>		  <packagingIncludes>
-			  WEB-INF/lib/dubbo-2.5.3.jar,
-			  WEB-INF/lib/javassist-3.15.0-GA.jar,
-			  WEB-INF/lib/netty-3.2.5.Final.jar,
-			  WEB-INF/lib/sharing-common-0.0.1-SNAPSHOT.jar,
-			  WEB-INF/classes/
-		  </packagingIncludes>
-		  </configuration>
-	  </plugin>
-	</plugins>
-  </build>
+    <dependencies>
+        <dependency>
+            <groupId>sharing.common</groupId>
+            <artifactId>sharing-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>sharing-server-user-common</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <!--<outputDirectory>E:\tomcat8-9999\webapps</outputDirectory>-->
+                    <packagingIncludes>
+                        WEB-INF/lib/dubbo-2.5.3.jar,
+                        WEB-INF/lib/javassist-3.15.0-GA.jar,
+                        WEB-INF/lib/netty-3.2.5.Final.jar,
+                        WEB-INF/lib/sharing-common-0.0.1-SNAPSHOT.jar,
+                        WEB-INF/classes/
+                    </packagingIncludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

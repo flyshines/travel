@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value="/user/common")
 public class UserCommonController extends AbstractController {
 
     private static final Logger logger   = LoggerFactory.getLogger(UserCommonController.class);
