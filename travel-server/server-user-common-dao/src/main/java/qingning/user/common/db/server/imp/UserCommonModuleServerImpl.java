@@ -22,31 +22,19 @@ public class UserCommonModuleServerImpl implements IUserCommonModuleServer {
 	@Autowired(required = true)
 	private LoginInfoMapper loginInfoMapper;
 	@Autowired(required = true)
-	private ShopStatisticsMapper shopStatisticsMapper;
-	@Autowired(required = true)
-	private CourseSaleMapper courseSaleMapper;
-	@Autowired(required = true)
 	private TradeBillMapper tradeBillMapper;
 	@Autowired(required = true)
 	private FeedbackMapper feedbackMapper;
 	@Autowired(required = true)
-	private CourseMapper courseMapper;
-	@Autowired(required = true)
 	private SystemConfigMapper systemConfigMapper;
-    @Autowired(required = true)
-    private ShopMapper shopMapper;
     @Autowired(required = true)
 	private PaymentBillMapper paymentBillMapper;
 	@Autowired(required = true)
-	private InformMapper informMapper;
+	private TicketMapper ticketMapper;
 	@Autowired(required = true)
-	private DistributerMapper distributerMapper;
-	@Autowired(required = true)
-	private ShopCourseMapper shopCourseMapper;
-	@Autowired(required = true)
-	private DistributerProfitMapper distributerProfitMapper;
-	@Autowired(required = true)
-	private ShopCustomerMapper shopCustomerMapper;
+	private ExtensionMapper extensionMapper;
+
+
 
 	public List<Map<String, Object>> getServerUrls() {
 		// TODO Auto-generated method stub
@@ -59,7 +47,7 @@ public class UserCommonModuleServerImpl implements IUserCommonModuleServer {
 	
 
 	public Map<String, Object> findCourseByCourseId(String courseId) {
-		return courseMapper.findCourseByCourseId(courseId);
+		return null;
 	}
 
 	public void closeTradeBill(Map<String, Object> failUpdateMap) {
@@ -141,20 +129,7 @@ public class UserCommonModuleServerImpl implements IUserCommonModuleServer {
 		loginInfo.put("update_time", now);
 		loginInfoMapper.insertLoginInfo(loginInfo);
 
-		//3.插入shop(测试)
-		Map<String,Object> shopMap = new HashMap<>();
-		String shopId = MiscUtils.getUUId();
-		shopMap.put("shop_id", shopId);
-		shopMap.put("user_id", uuid);
-		shopMap.put("shop_seq", "1");
-		shopMap.put("shop_name", reqMap.get("nick_name")+"的店铺");
-		shopMap.put("avatar_address", "http://onk0xuj5w.bkt.clouddn.com/images/iOSBE62C403A8C35421514DDC15D6B5EC0E.jpeg?w=750&h=750");
-		shopMapper.insertShop(shopMap);
-		
-		Map<String,String> resultMap = new HashMap<String,String>();
-		resultMap.put("user_id", uuid);
-		resultMap.put("shop_id", shopId);
-		return resultMap;
+		return null;
 	}
 
 
@@ -164,13 +139,9 @@ public class UserCommonModuleServerImpl implements IUserCommonModuleServer {
 
 	@Override
 	public Map<String, Object> findShopStatisticsByUserId(String user_id) {
-		return shopStatisticsMapper.findByUserId(user_id);
+		return null;
 	}
 
-	@Override
-	public List<Map<String, Object>> findCourseSaleList(Map<String, Object> parameters) {
-		return courseSaleMapper.findUserCourse(parameters);
-	}
 
 	@Override
 	public List<Map<String, Object>> findMyCostList(Map<String, Object> parameters) {
@@ -199,7 +170,7 @@ public class UserCommonModuleServerImpl implements IUserCommonModuleServer {
 
     @Override
     public Map<String, Object> findShopInfo(String shopId) {
-		return shopMapper.findByShopId(shopId);
+		return null;
     }
 
     public Map<String, Object> findTradebillByTradeId(String outTradeNo) {
@@ -207,39 +178,12 @@ public class UserCommonModuleServerImpl implements IUserCommonModuleServer {
 		return tradeBill;
 	}
 
-	@Override
-	public int insertInform(Map<String, Object> insertPayMap) {
-		return informMapper.insertInform(insertPayMap);
-	}
 
 	public Map<String, Object> findDistributerByInviteCode(String inviteCode) {
-		return distributerMapper.findDistributerByInviteCode(inviteCode);
+		return null;
 	}
 
-	@Override
-	public int insertDistributer(Map<String, Object> insertMap) {
-		return distributerMapper.insertDistributer(insertMap);
-	}
 
-	@Override
-	public int insertShop(Map<String, Object> insertMap) {
-		return shopMapper.insertShop(insertMap);
-	}
-
-	@Override
-	public int insertShopStatistics(Map<String, Object> insertMap) {
-		return shopStatisticsMapper.insertShopStatistics(insertMap);
-	}
-
-	@Override
-	public int updateShopStatistics(Map<String, Object> insertMap) {
-		return shopStatisticsMapper.updateShopStatistics(insertMap);
-	}
-
-	@Override
-	public int insertDistributerProfit(Map<String, Object> insertMap) {
-		return distributerProfitMapper.insertDistributerProfit(insertMap);
-	}
 
 	@Override
 	public int updatePaymentBill(Map<String, Object> updateMap) {
@@ -251,35 +195,6 @@ public class UserCommonModuleServerImpl implements IUserCommonModuleServer {
 		return tradeBillMapper.updateTradeBill(updateMap);
 	}
 
-	@Override
-	public int updateShopCourseNum(Map<String, Object> insertMap) {
-		return shopCourseMapper.updateShopCourseNum(insertMap);
-	}
-
-	@Override
-	public int updateShopCustomer(Map<String, Object> insertMap) {
-		return shopCustomerMapper.updateShopCustomer(insertMap);
-	}
-
-	@Override
-	public int insertShopCustomer(Map<String, Object> insertMap) {
-		return shopCustomerMapper.insertShopCustomer(insertMap);
-	}
-
-	@Override
-	public Map<String, Object> findDistributerByUserId(String userId) {
-		return distributerMapper.findDistributerByUserId(userId);
-	}
-
-	@Override
-	public Map<String, Object> findShopCustomerByShopIdUserId(String shopId, String userId) {
-		return shopCustomerMapper.findShopCustomerByShopIdUserId(shopId, userId);
-	}
-
-	@Override
-	public int insertCourseSale(Map<String, Object> insertMap) {
-		return courseSaleMapper.inserCourseSale(insertMap);
-	}
 
 	/**
 	 * 获取指定条件的系统配置列表
@@ -306,6 +221,16 @@ public class UserCommonModuleServerImpl implements IUserCommonModuleServer {
 	@Override
 	public int updateUserPhone(Map<String, Object> userMap) {
 		return userMapper.updateUser(userMap);
+	}
+
+	@Override
+	public Map<String, Object> findTicketInfo() {
+		return ticketMapper.selectByPrimaryKey("1");
+	}
+
+	@Override
+	public List<Map<String, Object>> findBannerList() {
+		return extensionMapper.selectExtension();
 	}
 
 }

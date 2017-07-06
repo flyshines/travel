@@ -48,11 +48,6 @@ public interface IUserCommonModuleServer {
 	 */
 	Map<String, Object> findShopStatisticsByUserId(String user_id);
 
-	/**
-	 * 获取我购买的课程信息
-	 * @return
-	 */
-	List<Map<String,Object>> findCourseSaleList(Map<String, Object> parameters);
 
 	/**
 	 * 获取我的消费记录
@@ -95,13 +90,6 @@ public interface IUserCommonModuleServer {
 	 */
 	int insertPaymentBill(Map<String, Object> insertPayMap);
 
-	/**
-	 * 生成通知信息
-	 * @param insertPayMap
-	 * @return
-	 */
-	int insertInform(Map<String, Object> insertPayMap);
-
 
 	/**
 	 * 查找分销者信息
@@ -110,41 +98,8 @@ public interface IUserCommonModuleServer {
 	 */
 	Map<String,Object> findDistributerByInviteCode(String inviteCode);
 
-	/**
-	 * 生成分销者信息
-	 * @param insertMap
-	 * @return
-	 */
-	int insertDistributer(Map<String, Object> insertMap);
-
-	/**
-	 * 生成店铺信息
-	 * @param insertMap
-	 * @return
-	 */
-	int insertShop(Map<String, Object> insertMap);
-
-	/**
-	 * 生成店铺统计信息
-	 * @param insertMap
-	 * @return
-	 */
-	int insertShopStatistics(Map<String, Object> insertMap);
 
 
-	/**
-	 * 更新店铺统计信息
-	 * @param insertMap
-	 * @return
-	 */
-	int updateShopStatistics(Map<String, Object> insertMap);
-
-	/**
-	 * 生成分销者收益信息
-	 * @param insertMap
-	 * @return
-	 */
-	int insertDistributerProfit(Map<String, Object> insertMap);
 
 	/**
 	 * 更新支付清单信息
@@ -159,49 +114,6 @@ public interface IUserCommonModuleServer {
 	 */
 	int updateTradeBill(Map<String, Object> updateMap);
 
-	/**
-	 * 更新店铺课程销售数量
-	 * @param insertMap
-	 * @return
-	 */
-	int updateShopCourseNum(Map<String, Object> insertMap);
-
-	/**
-	 * 更新店铺客户信息
-	 * @param insertMap
-	 * @return
-	 */
-	int updateShopCustomer(Map<String, Object> insertMap);
-
-	/**
-	 * 更新店铺客户信息
-	 * @param insertMap
-	 * @return
-	 */
-	int insertShopCustomer(Map<String, Object> insertMap);
-
-	/**
-	 * 查询分销者信息
-	 * @param user_id
-	 * @return
-	 */
-	Map<String,Object> findDistributerByUserId(String user_id);
-
-	/**
-	 * 获取店铺客户信息
-	 * @param shopId
-	 * @param userId
-	 * @return
-	 */
-	Map<String,Object> findShopCustomerByShopIdUserId(String shopId, String userId);
-
-	/**
-	 * 新增课程销售信息
-	 * @param insertMap
-	 *
-	 * @return
-	 */
-	int insertCourseSale(Map<String, Object> insertMap);
 
 	/**
 	 * 获取指定条件的系统配置列表
@@ -214,7 +126,7 @@ public interface IUserCommonModuleServer {
 	 * @param reqMap
 	 * @return
 	 */
-	public List<String> getMyCourseIdList(Map<String, Object> reqMap);
+	List<String> getMyCourseIdList(Map<String, Object> reqMap);
 
 	/**根据手机号码获取用户信息
 	 * @param phone
@@ -226,6 +138,12 @@ public interface IUserCommonModuleServer {
 	 * @param userMap
 	 * @return
 	 */
-	public int updateUserPhone(Map<String, Object> userMap);
+	int updateUserPhone(Map<String, Object> userMap);
 
+	/**查找门票信息
+	 * @return
+	 */
+	Map<String,Object> findTicketInfo();
+
+	List<Map<String,Object>> findBannerList();
 }

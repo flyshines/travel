@@ -2,41 +2,46 @@
 <servers>
 	<server name="UserCommonServer">
 		<default class="qingning.user.common.server.imp.UserCommonServerImpl">
-			<function name="logUserInfo">
+
+			<!--购买主页-->
+			<function name="buyIndex">
 				<auth>
-					<accessToken require="N" />
+					<accessToken require="Y" />
+					<timesLimit millisecond="500" />
 				</auth>
 				<inputs>
-					<param name="login_id" type="string"/>
-					<param name="login_type" type="string" default="0"/>
-					<param name="user_id" type="string"/>
-					<param name="phone_num" type="string"/>
-					<param name="device_id" type="string"/>
-					<param name="plateform" type="string" require="Y,000100"/>
-					<param name="device_model" type="string"/>
-					<param name="device_oem" type="string"/>
-					<param name="screen_size" type="string"/>
-					<param name="os_version" type="string"/>
-					<param name="longitude" type="string"/>
-					<param name="latitude" type="string"/>
-					<param name="download_channel" type="string"/>
-					<param name="version" type="string"/>
-					<param name="net_status" type="string"/>
-					<param name="network_operators" type="string"/>
-					<param name="webchat_authorization" type="string"/>
-					<param name="status" type="string" default="2"/>							
 				</inputs>
 				<outputs>
-					<param name="server_time" type="long"/>			
-					<param name="version_info" type="map">
-						<param name="version_no" type="string"/>
-						<param name="is_force" type="string"/>
-						<param name="update_desc" type="string"/>
-						<param name="version_url" type="string"/>
+					<param name="access_info" fieldname="access_remark" type="string"/>
+					<param name="buy_info" type="string"/>
+					<param name="access_type" type="string"/>
+					<param name="access_price" fieldname="ticket_price" type="double"/>
+					<param name="banner_list" type="list">
+						<param name="banner_id" fieldname="extension_id" type="string"/>
+						<param name="banner_title" fieldname="extension_title" type="string"/>
+						<param name="banner_image" fieldname="extension_img" type="string"/>
 					</param>
 				</outputs>
 			</function>
-			
+
+			<!--用户信息-->
+			<function name="userInfo">
+				<auth>
+					<accessToken require="Y" />
+				</auth>
+				<inputs>
+				</inputs>
+				<outputs>
+					<param name="user_id"  type="string"/>
+					<param name="nick_name" type="string"/>
+					<param name="avatar_address" type="string"/>
+					<param name="is_vip" default="0" type="string"/>
+					<param name="invalid_time" type="long"/>
+					<param name="rq_code" type="string"/>
+
+				</outputs>
+			</function>
+
 			<function name="qiNiuUploadToken">
 				<auth>
 					<accessToken require="Y" />
@@ -79,17 +84,7 @@
 					</param>					
 				</outputs>
 			</function>
-			
-			<function name="userInfo">
-				<auth>
-					<accessToken require="Y" />
-				</auth>
-				<inputs>
-					<param name="query_type" type="string" require="Y,000100"  format="^[1-2]$,120011"/>
-				</inputs>
-				<outputs>
-				</outputs>
-			</function>
+
 			
 			<function name="updateUserInfo">
 				<auth>
@@ -215,7 +210,8 @@
 					</param>
 				</outputs>
 			</function>
-			
+
+
 			<function name="generateWeixinPayBill">
 				<auth>
 					<accessToken require="Y" />

@@ -1,8 +1,6 @@
 package qingning.user.common.server.imp;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.qiniu.common.Zone;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
@@ -13,8 +11,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.servlet.ModelAndView;
-
 import qingning.common.entity.QNLiveException;
 import qingning.common.entity.RequestEntity;
 import qingning.common.util.*;
@@ -22,7 +18,6 @@ import qingning.server.AbstractQNLiveServer;
 import qingning.server.annotation.FunctionName;
 import qingning.server.rpc.manager.IUserCommonModuleServer;
 import qingning.user.common.server.other.*;
-import qingning.user.common.server.util.ServerUtils;
 import redis.clients.jedis.Jedis;
 
 import java.security.Timestamp;
@@ -51,139 +46,53 @@ public class UserCommonServerImpl extends AbstractQNLiveServer {
     }
 
     /**
-     * 获取服务器时间，从而获取客户登录信息
+     * 购买主页
+     *
+     * @param reqEntity
+     * @return
+     * @throws Exception
+     */
+    @FunctionName("buyIndex")
+    public Map<String, Object> buyIndex(RequestEntity reqEntity) throws Exception {
+        Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
+        String userId = AccessTokenUtil.getUserIdFromAccessToken(reqEntity.getAccessToken());
+        Map<String,Object> info = userCommonModuleServer.findTicketInfo();
+
+        List<Map<String,Object>> bannerList = userCommonModuleServer.findBannerList();
+        info.put("banner_list",bannerList);
+        return info;
+    }
+
+
+    /**
+     * 查询用户信息
      *
      * @param reqEntity
      * @return
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
-    @FunctionName("logUserInfo")
-    public Map<String, Object> collectClientInformation(RequestEntity reqEntity) throws Exception {
-        // Jedis jedis = jedisUtils.getJedis();
-        Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
-        long loginTime = System.currentTimeMillis();
-        if (!"2".equals(reqMap.get("status"))) {
-            reqMap.put("create_time", loginTime);
-            reqMap.put("create_date", MiscUtils.getDate(loginTime));
-            if (!MiscUtils.isEmpty(reqEntity.getAccessToken())) {
-                String user_id = AccessTokenUtil.getUserIdFromAccessToken(reqEntity.getAccessToken());
-                reqMap.put("user_id", user_id);
-                // Map<String,String> userInfo = CacheUtils.readUser(user_id,
-                // reqEntity, readUserOperation, jedisUtils);
-                // reqMap.put("gender", userInfo.get("gender"));
-                Map<String, String> queryParam = new HashMap<>();
-                queryParam.put(Constants.CACHED_KEY_ACCESS_TOKEN_FIELD, reqEntity.getAccessToken());
-                String accessTokenKey = MiscUtils.getKeyOfCachedData(Constants.CACHED_KEY_ACCESS_TOKEN, queryParam);
-                // Map<String,String> accessTokenInfo =
-                // jedis.hgetAll(accessTokenKey);
-                Map<String, String> accessTokenInfo = null;
-                if (MiscUtils.isEmpty(accessTokenInfo)) {
-                    Map<String, Object> queryMap = new HashMap<String, Object>();
-                    String login_id = (String) reqMap.get("login_id");
-                    String login_type = (String) reqMap.get("login_type");
-                    queryMap.put("login_type", login_type);
-                    queryMap.put("login_id", login_id);
-                    accessTokenInfo = new HashMap<String, String>();
-                    MiscUtils.converObjectMapToStringMap(
-                            userCommonModuleServer.getLoginInfoByLoginIdAndLoginType(queryMap), accessTokenInfo);
-                }
-                // reqMap.put("record_time", userInfo.get("create_time"));
-                reqMap.put("old_subscribe", accessTokenInfo.get("subscribe"));
-                // reqMap.put("country", userInfo.get("country"));
-                // reqMap.put("province", userInfo.get("province"));
-                // reqMap.put("city", userInfo.get("city"));
-                // reqMap.put("district", userInfo.get("district"));
-                String web_openid = (String) accessTokenInfo.get("web_openid");
-                reqMap.put("subscribe", null);
-                reqMap.put("web_openid", null);
-                // if(MiscUtils.isEmpty(web_openid)){
-                // reqMap.put("subscribe", "0");
-                // } else {
-                // reqMap.put("web_openid", web_openid);
-                // }
-                // String user_role =
-                // MiscUtils.convertString(accessTokenInfo.get("user_role"));
-                // if(user_role.contains(Constants.USER_ROLE_LECTURER)){
-                // reqMap.put("live_room_build", "1");
-                // } else {
-                // reqMap.put("live_room_build", "0");
-                // }
-                String status = (String) reqMap.get("status");
-                if ("1".equals(status) || "3".equals(status)) {
-                    Map<String, String> updateValue = new HashMap<String, String>();
-                    updateValue.put("last_login_time", loginTime + "");
-                    updateValue.put("last_login_ip", (String) reqMap.get("ip"));
-                    // String plateform = (String)userInfo.get("plateform");
-                    // String newPalteForm = (String)reqMap.get("plateform");
-                    // if(MiscUtils.isEmpty(plateform)){
-                    // plateform = newPalteForm;
-                    // } else if(!MiscUtils.isEmpty(newPalteForm) &&
-                    // plateform.indexOf(newPalteForm) == -1){
-                    // plateform=plateform+","+newPalteForm;
-                    // }
-                    // updateValue.put("plateform", plateform);
-                    Map<String, Object> query = new HashMap<String, Object>();
-                    query.put("user_id", user_id);
-                    String key = MiscUtils.getKeyOfCachedData(Constants.CACHED_KEY_USER, query);
-                    // jedis.hmset(key, updateValue);
-                    // jedis.sadd(Constants.CACHED_UPDATE_USER_KEY, user_id);
-                }
-            }
-            // RequestEntity requestEntity =
-            // this.generateRequestEntity("LogServer",
-            // Constants.MQ_METHOD_ASYNCHRONIZED, "logUserInfo", reqMap);
-            // mqUtils.sendMessage(requestEntity);
-        }
-        loginTime = System.currentTimeMillis();
+    @FunctionName("userInfo")
+    public Map<String, Object> getUserInfo(RequestEntity reqEntity) throws Exception {
         Map<String, Object> resultMap = new HashMap<String, Object>();
-        resultMap.put("server_time", System.currentTimeMillis());
-        Map<String, Object> versionReturnMap = new HashMap<>();
-        // 增加下发版本号逻辑
-        // 平台：0： 微信 1：andriod 2:IOS
-        if (!"0".equals(reqMap.get("plateform"))) {
-            // Map<String,String> versionInfoMap =
-            // CacheUtils.readAppVersion(reqMap.get("plateform").toString(),
-            // reqEntity, readAPPVersionOperation, jedisUtils, true);
-            // if(! MiscUtils.isEmpty(versionInfoMap)){
-            // //状态 0：关闭 1：开启
-            // if(versionInfoMap.get("status").equals("1")){
-            // if(MiscUtils.isEmpty(reqMap.get("version")) ||
-            // compareVersion(reqMap.get("plateform").toString(),
-            // versionInfoMap.get("version_no"),
-            // reqMap.get("version").toString())){
-            // Map<String,Object> cacheMap = new HashMap<>();
-            // cacheMap.put(Constants.CACHED_KEY_APP_VERSION_INFO_FIELD,
-            // reqMap.get("plateform"));
-            // String force_version_key =
-            // MiscUtils.getKeyOfCachedData(Constants.FORCE_UPDATE_VERSION,
-            // cacheMap);
-            // ((Map<String, Object>)
-            // reqEntity.getParam()).put("force_version_key",
-            // force_version_key);
-            // Map<String,String> forceVersionInfoMap =
-            // CacheUtils.readAppForceVersion(reqMap.get("plateform").toString(),
-            // reqEntity, readForceVersionOperation, jedisUtils, true);
-            // versionReturnMap.put("is_force","2");
-            // if(! MiscUtils.isEmpty(forceVersionInfoMap)){
-            // if(MiscUtils.isEmpty(reqMap.get("version")) ||
-            // compareVersion(reqMap.get("plateform").toString(),
-            // versionInfoMap.get("version_no"),
-            // reqMap.get("version").toString())){
-            // versionReturnMap.put("is_force","1");//是否强制更新 1强制更新 2非强制更新
-            // }
-            // }
-            // versionReturnMap.put("version_no",versionInfoMap.get("version_no"));
-            // versionReturnMap.put("update_desc",versionInfoMap.get("update_desc"));
-            // versionReturnMap.put("version_url",versionInfoMap.get("version_url"));
-            // resultMap.put("version_info", versionReturnMap);
-            // }
-            // }
-            // }
-        }
+        String userId = AccessTokenUtil.getUserIdFromAccessToken(reqEntity.getAccessToken());
+        // 个人基本信息
+        Map<String, Object> param = new HashMap<>();
+        param.put("user_id",userId);
+        reqEntity.setParam(param);
+        Map<String, String> values = CacheUtils.readUser(userId, reqEntity, readUserOperation, jedisUtils);
+
+        resultMap.put("avatar_address", values.get("avatar_address"));
+        resultMap.put("nick_name", MiscUtils.RecoveryEmoji(values.get("nick_name")));
+        resultMap.put("is_vip", "1");
+        resultMap.put("invalid_time", new Date());
+        resultMap.put("user_id", userId);
+
+        resultMap.put("rq_code","www.baidu.com");
 
         return resultMap;
     }
+
 
 
     @SuppressWarnings("unchecked")
@@ -298,52 +207,6 @@ public class UserCommonServerImpl extends AbstractQNLiveServer {
         return resultMap;
     }
 
-    /**
-     * 查询用户信息
-     *
-     * @param reqEntity
-     * @return
-     * @throws Exception
-     */
-    @SuppressWarnings("unchecked")
-    @FunctionName("userInfo")
-    public Map<String, Object> getUserInfo(RequestEntity reqEntity) throws Exception {
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-
-        Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
-        String userId = AccessTokenUtil.getUserIdFromAccessToken(reqEntity.getAccessToken());
-        // 个人基本信息
-        String queryType = reqMap.get("query_type").toString();
-        Map<String, Object> param = (Map)reqEntity.getParam();
-        param.put("user_id",userId);
-        Map<String, String> values = CacheUtils.readUser(userId, reqEntity, readUserOperation, jedisUtils);
-        reqMap.put("user_id", userId);
-        resultMap.put("avatar_address", values.get("avatar_address"));
-        resultMap.put("nick_name", MiscUtils.RecoveryEmoji(values.get("nick_name")));
-        resultMap.put("level", values.get("level"));
-        resultMap.put("rq_card_address", values.get("rq_card_address"));
-        resultMap.put("course_num", values.get("course_num"));
-
-
-		reqMap.put("user_id", userId);
-		resultMap.put("avatar_address", values.get("avatar_address"));
-		resultMap.put("nick_name", MiscUtils.RecoveryEmoji(values.get("nick_name")));
-		resultMap.put("level", values.get("level"));
-		resultMap.put("rq_card_address", values.get("rq_card_address"));
-		resultMap.put("course_num", values.get("course_num"));
-		resultMap.put("subscribe", values.get("subscribe"));
-
-		// 获取收益和余额
-		String role = values.get("user_role");
-		if (queryType.equals("2") && (!MiscUtils.isEmpty(role) && role.indexOf(Constants.USER_ROLE_DISTRIBUTER) > -1)) {
-			Map<String, String> shopMap = CacheUtils.readShop(userId, reqEntity, readShopStatisticsOperation);//			resultMap.put("course_num", shopMap.get("course_num"));
-            resultMap.put("balance", shopMap.get("balance"));
-            resultMap.put("sale_num_total", shopMap.get("sale_num_total"));
-            resultMap.put("student_offer", shopMap.get("student_offer"));
-        }
-
-        return resultMap;
-    }
 
     /**
      * 更新用户信息
@@ -408,25 +271,6 @@ public class UserCommonServerImpl extends AbstractQNLiveServer {
         return WeiXinUtil.sign(JSApiTIcket, reqMap.get("url").toString());
     }
 
-    /**
-     * 获取我购买的课程记录
-     *
-     * @param reqEntity
-     * @return
-     * @throws Exception
-     */
-    @FunctionName("getMyCourseList")
-    public Map<String, Object> getMyCourseList(RequestEntity reqEntity) throws Exception {
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-        @SuppressWarnings("unchecked")
-        Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
-        String userId = AccessTokenUtil.getUserIdFromAccessToken(reqEntity.getAccessToken());
-        reqMap.put("user_id", userId);
-
-        List<Map<String, Object>> resList = userCommonModuleServer.findCourseSaleList(reqMap);
-        resultMap.put("course_info_list", resList);
-        return resultMap;
-    }
 
     /**
      * 获取我的消费记录
@@ -760,44 +604,13 @@ public class UserCommonServerImpl extends AbstractQNLiveServer {
                     insertMap.put("shop_id", shopId);
                     insertMap.put("course_id", courseId);
                     insertMap.put("sale_num", 1);
-                    userCommonModuleServer.updateShopCourseNum(insertMap);
                     // 新增店铺客户表
                     insertMap.clear();
                     insertMap.put("user_id", userId);
                     insertMap.put("shop_id", shopId);
                     insertMap.put("cost_money", requestMapData.get("total_fee"));
                     boolean isNewCustomer = false;
-                    String shopCustomerId = MiscUtils.getUUId();
-                    if (userCommonModuleServer.updateShopCustomer(insertMap) == 0) {
-                        insertMap.put("shop_customer_id", shopCustomerId);
-                        userCommonModuleServer.insertShopCustomer(insertMap);
-                        isNewCustomer = true;
-                    } else {
-                        Map<String, Object> shopCustomerMap = userCommonModuleServer.findShopCustomerByShopIdUserId(shopId, userId);
-                        shopCustomerId = shopCustomerMap.get("shop_customer_id").toString();
-                    }
 
-                    // 新增课程销售表
-                    insertMap.clear();
-                    insertMap.put("record_id", MiscUtils.getUUId());
-                    insertMap.put("shop_customer_id", shopCustomerId);
-                    insertMap.put("user_id", userId);
-//					insertMap.put("nick_name", value);
-                    insertMap.put("shop_id", shopId);
-                    insertMap.put("course_id", courseId);
-//					insertMap.put("course_title", value);
-//					insertMap.put("course_url", value);
-//					insertMap.put("course_type", value);
-//					insertMap.put("lecturer_id", value);
-//					insertMap.put("lecturer_name", value);
-//					insertMap.put("create_time", value);
-                    insertMap.put("sale_money", requestMapData.get("total_fee"));
-                    insertMap.put("distributer_distribute_income", courseMap.get("distributer_distribute_income"));
-//					insertMap.put("distributer_name", value);
-                    insertMap.put("tutor_distribute_income", courseMap.get("tutor_distribute_income"));
-                    insertMap.put("platform_distribute_income", courseMap.get("platform_distribute_income"));
-                    insertMap.put("lecturer_distribute_income", courseMap.get("lecturer_distribute_income"));
-                    userCommonModuleServer.insertCourseSale(insertMap);
 
                     // 更新分销者店铺统计表
                     insertMap.clear();
@@ -815,90 +628,6 @@ public class UserCommonServerImpl extends AbstractQNLiveServer {
                     insertMap.put("balance", profit);
                     insertMap.put("course_num", 1);
 
-                    Timestamp updateTime = (Timestamp) shopStatisticsMap.get("update_time");
-                    if (MiscUtils.isThisDay(updateTime.getTimestamp().getTime(), now.getTime())) {
-                        // 上一次更新是当日
-                        insertMap.put("month_sale", (Long) shopStatisticsMap.get("month_sale") + 1);
-                        insertMap.put("day_sale", (Long) shopStatisticsMap.get("day_sale") + 1);
-                        insertMap.put("day_income", (Long) shopStatisticsMap.get("day_income") + profit);
-                        insertMap.put("week_income", (Long) shopStatisticsMap.get("week_income") + profit);
-                        insertMap.put("month_income", (Long) shopStatisticsMap.get("month_income") + profit);
-                    } else if (MiscUtils.isThisWeek(updateTime.getTimestamp().getTime(), now.getTime())) {
-                        // 上一次更新非当日，但是本周
-                        insertMap.put("month_sale", (Long) shopStatisticsMap.get("month_sale") + 1);
-                        insertMap.put("day_sale", 1);
-                        insertMap.put("week_income", (Long) shopStatisticsMap.get("week_income") + profit);
-                        insertMap.put("month_income", (Long) shopStatisticsMap.get("month_income") + profit);
-                    } else if (MiscUtils.isThisMonth(updateTime.getTimestamp().getTime(), now.getTime())) {
-                        // 上一次更新非当日，非本周，但是本月
-                        insertMap.put("month_sale", 1);
-                        insertMap.put("day_sale", 1);
-                        insertMap.put("day_income", profit);
-                        insertMap.put("week_income", profit);
-                        insertMap.put("month_income", (Long) shopStatisticsMap.get("month_income") + profit);
-                    } else {
-                        // 上一次更新非当日，非本周，但是本月
-                        insertMap.put("month_sale", 1);
-                        insertMap.put("day_sale", 1);
-                        insertMap.put("day_income", profit);
-                        insertMap.put("week_income", profit);
-                        insertMap.put("month_income", profit);
-                        insertMap.put("last_month_income", (Long) shopStatisticsMap.get("month_income"));
-                    }
-                    userCommonModuleServer.updateShopStatistics(insertMap);
-
-                    // 更新导师店铺统计信息
-                    insertMap.clear();
-                    Map<String, Object> tutorMap = userCommonModuleServer.findDistributerByUserId(shopMap.get("user_id").toString());
-                    if (!MiscUtils.isEmpty(tutorMap.get("tutor_id"))) {
-                        Map<String, Object> tutorShopStatisticsMap = userCommonModuleServer.findShopStatisticsByUserId(tutorMap.get("tutor_id").toString());
-                        if (!MiscUtils.isEmpty(tutorShopStatisticsMap)) {
-                            insertMap.clear();
-                            insertMap.put("shop_id", tutorShopStatisticsMap.get("shop_id"));
-                            insertMap.put("user_id", tutorMap.get("tutor_id"));
-                            insertMap.put("update_time", now);
-
-                            profit = (Long) courseMap.get("tutor_distribute_income");
-                            insertMap.put("sale_income_total", profit);
-                            insertMap.put("student_offer", profit);
-                            insertMap.put("balance", profit);
-                            insertMap.put("course_num", 1);
-
-                            updateTime = (Timestamp) tutorShopStatisticsMap.get("update_time");
-                            if (MiscUtils.isThisDay(updateTime.getTimestamp().getTime(), now.getTime())) {
-                                // 上一次更新是当日
-                                insertMap.put("day_income", (Long) tutorShopStatisticsMap.get("day_income") + profit);
-                                insertMap.put("week_income", (Long) tutorShopStatisticsMap.get("week_income") + profit);
-                                insertMap.put("month_income", (Long) tutorShopStatisticsMap.get("month_income") + profit);
-                            } else if (MiscUtils.isThisWeek(updateTime.getTimestamp().getTime(), now.getTime())) {
-                                // 上一次更新非当日，但是本周
-                                insertMap.put("week_income", (Long) tutorShopStatisticsMap.get("week_income") + profit);
-                                insertMap.put("month_income", (Long) tutorShopStatisticsMap.get("month_income") + profit);
-                            } else if (MiscUtils.isThisMonth(updateTime.getTimestamp().getTime(), now.getTime())) {
-                                // 上一次更新非当日，非本周，但是本月
-                                insertMap.put("day_income", profit);
-                                insertMap.put("week_income", profit);
-                                insertMap.put("month_income", (Long) tutorShopStatisticsMap.get("month_income") + profit);
-                            } else {
-                                // 上一次更新非当日，非本周，但是本月
-                                insertMap.put("day_income", profit);
-                                insertMap.put("week_income", profit);
-                                insertMap.put("month_income", profit);
-                                insertMap.put("last_month_income", (Long) tutorShopStatisticsMap.get("month_income"));
-                            }
-                            userCommonModuleServer.updateShopStatistics(insertMap);
-                        }
-                    }
-
-                    // 生成分销者收益流水表
-                    insertMap.put("profit_id", MiscUtils.getUUId());
-                    insertMap.put("user_id", shopMap.get("usre_id"));
-                    insertMap.put("trade_id", tradeId);
-                    insertMap.put("profit_type", "0");
-                    insertMap.put("money", courseMap.get("platform_distribute_income"));
-                    insertMap.put("former_balance", shopStatisticsMap.get("balance"));
-                    insertMap.put("later_balance", (Long) shopStatisticsMap.get("balance") + (Long) courseMap.get("platform_distribute_income"));
-                    userCommonModuleServer.insertDistributerProfit(insertMap);
 
                     // 生成分销者收益通知
                     insertMap.clear();
@@ -911,119 +640,11 @@ public class UserCommonServerImpl extends AbstractQNLiveServer {
                     insertMap.put("balance", Long.parseLong(courseMap.get("balance").toString()) + income);
                     Map<String, Object> userMap = userCommonModuleServer.findUserInfoByUserId(userId);
                     userCommonModuleServer.insertPaymentBill(insertMap);
-                } else {// 购买会员交易
-                    // 生成分销者信息
-                    Map<String, Object> insertMap = new HashMap<>();
-                    insertMap.put("user_id", userId);
-                    String inviteCodeD = billMap.get("invite_code").toString();
-                    String tutorUserId = null;
-                    Map<String, Object> tutorMap = null;
-                    if (!MiscUtils.isEmpty(inviteCodeD)) {
-                        tutorMap = userCommonModuleServer.findDistributerByInviteCode(inviteCodeD);
-                        tutorUserId = (String) tutorMap.get("user_id");
-                        insertMap.put("tutor_id", tutorUserId);
-                    }
-                    Calendar cal = Calendar.getInstance();
-                    cal.add(Calendar.YEAR, 1);
-                    insertMap.put("end_time", cal.getTime());
-
-                    List<String> paramters = new ArrayList<>();
-                    String inviteJoinRatio = "invite_join_ratio";
-                    String inviteCodeStart = "invite_code_start";
-                    String inviteJoinMoney = "invite_join_money";
-                    paramters.add(inviteJoinRatio);
-                    paramters.add(inviteCodeStart);
-                    List<Map<String, Object>> resMap = userCommonModuleServer.findSystemConfig(paramters);
-                    for (Map<String, Object> sysConfig : resMap) {
-                        if (inviteJoinRatio.equals(sysConfig.get("config_key"))) {
-                            inviteJoinRatio = sysConfig.get("config_value").toString();
-                        } else if (inviteCodeStart.equals(sysConfig.get("config_key"))) {
-                            inviteCodeStart = sysConfig.get("config_value").toString();
-                        } else if (inviteJoinMoney.equals(sysConfig.get("config_key"))) {
-                            inviteJoinMoney = sysConfig.get("config_value").toString();
-                        }
-                    }
-                    long inviteCode = jedis.incrBy(Constants.CACHED_KEY_INVITE_CODE, 1);
-                    if (inviteCode < Long.parseLong(inviteCodeStart)) {
-                        inviteCode = Long.parseLong(inviteCodeStart);
-                        jedis.set(Constants.CACHED_KEY_INVITE_CODE, inviteCodeStart);
-                    }
-                    insertMap.put("invite_code", inviteCode);
-                    int ret = userCommonModuleServer.insertDistributer(insertMap);
-                    if (ret < 1) {
-                        throw new QNLiveException("000099");
-                    }
-
-                    // 生成分销者店铺信息
-                    insertMap.clear();
-                    String shopId = MiscUtils.getUUId();
-                    insertMap.put("shop_id", shopId);
-                    insertMap.put("user_id", userId);
-                    userCommonModuleServer.insertShop(insertMap);
-
-                    long profit = Long.parseLong(inviteJoinMoney) * Long.parseLong(inviteJoinRatio) / 100;
-                    // 生成分销者店铺统计信息
-                    insertMap.clear();
-                    insertMap.put("shop_id", shopId);
-                    insertMap.put("user_id", userId);
-                    userCommonModuleServer.insertShopStatistics(insertMap);
-
-                    // 如果有导师，则更新导师信息
-                    if (!MiscUtils.isEmpty(tutorUserId)) {
-                        Map<String, Object> tutorShopStatistics = userCommonModuleServer.findShopStatisticsByUserId(tutorMap.get("user_id").toString());
-                        if (MiscUtils.isEmpty(tutorShopStatistics)) {
-                            // 更新导师店铺统计信息
-                            insertMap.clear();
-                            insertMap.put("shop_id", tutorMap.get("shop_id"));
-                            insertMap.put("user_id", tutorUserId);
-                            insertMap.put("update_time", now);
-                            insertMap.put("sale_income_total", profit);
-                            insertMap.put("invite_join_offer", profit);
-                            insertMap.put("balance", profit);
-
-                            Timestamp updateTime = (Timestamp) tutorShopStatistics.get("update_time");
-                            if (MiscUtils.isThisDay(updateTime.getTimestamp().getTime(), now.getTime())) {
-                                // 上一次更新是当日
-                                insertMap.put("day_income", (Long) tutorShopStatistics.get("day_income") + profit);
-                                insertMap.put("week_income", (Long) tutorShopStatistics.get("week_income") + profit);
-                                insertMap.put("month_income", (Long) tutorShopStatistics.get("month_income") + profit);
-                            } else if (MiscUtils.isThisWeek(updateTime.getTimestamp().getTime(), now.getTime())) {
-                                // 上一次更新非当日，但是本周
-                                insertMap.put("day_income", profit);
-                                insertMap.put("week_income", (Long) tutorShopStatistics.get("week_income") + profit);
-                                insertMap.put("month_income", (Long) tutorShopStatistics.get("month_income") + profit);
-                            } else if (MiscUtils.isThisMonth(updateTime.getTimestamp().getTime(), now.getTime())) {
-                                // 上一次更新非当日，非本周，但是本月
-                                insertMap.put("day_income", profit);
-                                insertMap.put("week_income", profit);
-                                insertMap.put("month_income", (Long) tutorShopStatistics.get("month_income") + profit);
-                            } else {
-                                // 上一次更新非当日，非本周，但是本月
-                                insertMap.put("day_income", profit);
-                                insertMap.put("week_income", profit);
-                                insertMap.put("month_income", profit);
-                                insertMap.put("last_month_income", (Long) tutorShopStatistics.get("month_income"));
-                            }
-                            userCommonModuleServer.updateShopStatistics(insertMap);
-
-                            // 生成导师收益流水表
-                            insertMap.clear();
-                            insertMap.put("profit_id", MiscUtils.getUUId());
-                            insertMap.put("user_id", tutorUserId);
-                            insertMap.put("trade_id", tradeId);
-                            insertMap.put("profit_type", "0");
-                            insertMap.put("money", profit);
-                            insertMap.put("former_balance", tutorShopStatistics.get("balance"));
-                            insertMap.put("later_balance", (Long) tutorShopStatistics.get("balance") + profit);
-                            userCommonModuleServer.insertDistributerProfit(insertMap);
-                        }
-                    }
                 }
             } else {
                 logger.debug("==> 微信支付失败 ,流水 ：" + tradeId);
                 resultStr = TenPayConstant.FAIL;
             }
-
         } else {// MD5签名失败
             logger.debug("==> fail -Md5 failed");
             resultStr = TenPayConstant.FAIL;
