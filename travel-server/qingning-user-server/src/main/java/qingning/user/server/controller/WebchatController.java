@@ -49,7 +49,7 @@ public class WebchatController extends AbstractController {
 			remote_ip_address = "127.0.0.1";
 		}
 		map.put("last_login_ip",remote_ip_address);
-		RequestEntity requestEntity = this.createRequestEntity("UserCommonServer", "weixinCodeUserLogin", null, "");
+		RequestEntity requestEntity = this.createRequestEntity("UserServer", "weixinCodeUserLogin", null, "");
 		requestEntity.setParam(map);
 		ResponseEntity responseEntity = this.process(requestEntity, serviceManger, message);
 		Map<String, Object> resultMap = (Map<String, Object>) responseEntity.getReturnData();
@@ -88,7 +88,7 @@ public class WebchatController extends AbstractController {
 			HttpEntity<Object> entity,
 			@RequestHeader("access_token") String accessToken,
 			@RequestHeader("version") String version, HttpServletRequest request) throws Exception {
-		RequestEntity requestEntity = this.createRequestEntity("UserCommonServer", "generateWeixinPayBill", accessToken, version);
+		RequestEntity requestEntity = this.createRequestEntity("UserServer", "generateWeixinPayBill", accessToken, version);
 		String remote_ip_address = MiscUtils.getIpAddr(request);
 		if("0:0:0:0:0:0:0:1".equals(remote_ip_address)){
 			remote_ip_address = "127.0.0.1";
@@ -116,7 +116,7 @@ public class WebchatController extends AbstractController {
 			String resultData = MiscUtils.convertStreamToString(request.getInputStream());
 			SortedMap<String,String> requestMapData = MiscUtils.requestToMap(resultData);//notify请求数据
 			logger.info("===> weixinNotify 请求数据：" + requestMapData);
-			RequestEntity requestEntity = this.createRequestEntity("UserCommonServer", "handleWeixinPayResult", "", "");
+			RequestEntity requestEntity = this.createRequestEntity("UserServer", "handleWeixinPayResult", "", "");
 			requestEntity.setParam(requestMapData);
 			ResponseEntity responseEntity = this.process(requestEntity, serviceManger, message);
 			String result = responseEntity.getReturnData().toString();
@@ -145,7 +145,7 @@ public class WebchatController extends AbstractController {
             @RequestParam(value = "url", defaultValue = "") String url,
             @RequestHeader("version") String version
     ) throws Exception {
-        RequestEntity requestEntity = this.createRequestEntity("UserCommonServer", "weiXinConfiguration", null, version);
+        RequestEntity requestEntity = this.createRequestEntity("UserServer", "weiXinConfiguration", null, version);
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("url", url);
         requestEntity.setParam(param);
