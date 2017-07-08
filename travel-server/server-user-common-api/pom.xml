@@ -32,7 +32,7 @@
                         WEB-INF/lib/dubbo-2.5.3.jar,
                         WEB-INF/lib/javassist-3.15.0-GA.jar,
                         WEB-INF/lib/netty-3.2.5.Final.jar,
-                        WEB-INF/lib/sharing-common-0.0.1-SNAPSHOT.jar,
+                        WEB-INF/lib/common-0.0.1-SNAPSHOT.jar,
                         WEB-INF/classes/
                     </packagingIncludes>
                 </configuration>

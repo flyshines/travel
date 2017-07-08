@@ -8,6 +8,6 @@
   <groupId>common</groupId>
   <artifactId>common</artifactId>
   <build>
-	<finalName>sharing-common-0.0.1-SNAPSHOT</finalName>
+	<finalName>common-0.0.1-SNAPSHOT</finalName>
   </build>
 </project>
