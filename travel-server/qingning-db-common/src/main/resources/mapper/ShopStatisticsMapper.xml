@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="qingning.db.common.mybatis.persistence.ShopStatisticsMapper" >
+    <select id="findByUserId" resultType="hashmap" parameterType="java.lang.String" >
+        select * from t_shop_statistics where user_id = #{user_id}
+    </select>
+
+    <select id="findByShopId" resultType="hashmap" parameterType="java.lang.String" >
+        select * from t_shop_statistics where shop_id = #{shop_id}
+    </select>
+
+    <insert id="updateShopStatistics" parameterType="hashmap" >
+        insert into t_shop_statistics
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="shop_id != null" >
+                shop_id,
+            </if>
+            <if test="user_id != null" >
+                user_id,
+            </if>
+            <if test="customer_num_total != null" >
+                customer_num_total,
+            </if>
+            <if test="sale_money_total != null" >
+                sale_money_total,
+            </if>
+            <if test="sale_num_total != null" >
+                sale_num_total,
+            </if>
+            <if test="sale_income_total != null" >
+                sale_income_total,
+            </if>
+            <if test="customer_offer != null" >
+                customer_offer,
+            </if>
+            <if test="student_offer != null" >
+                student_offer,
+            </if>
+            <if test="last_month_income != null" >
+                last_month_income,
+            </if>
+            <if test="month_income != null" >
+                month_income,
+            </if>
+            <if test="week_income != null" >
+                week_income,
+            </if>
+            <if test="day_income != null" >
+                day_income,
+            </if>
+            <if test="update_time != null" >
+                update_time,
+            </if>
+            <if test="visit_times != null" >
+                visit_times,
+            </if>
+            <if test="course_num != null" >
+                course_num,
+            </if>
+            <if test="balance != null" >
+                balance,
+            </if>
+            <if test="day_sale != null" >
+                day_sale,
+            </if>
+            <if test="month_sale != null" >
+                month_sale,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="shop_id != null" >
+                #{shop_id},
+            </if>
+            <if test="user_id != null" >
+                #{user_id},
+            </if>
+            <if test="customer_num_total != null" >
+                #{customer_num_total},
+            </if>
+            <if test="sale_money_total != null" >
+                #{sale_money_total},
+            </if>
+            <if test="sale_num_total != null" >
+                #{sale_num_total},
+            </if>
+            <if test="sale_income_total != null" >
+                #{sale_income_total},
+            </if>
+            <if test="customer_offer != null" >
+                #{customer_offer},
+            </if>
+            <if test="student_offer != null" >
+                #{student_offer},
+            </if>
+            <if test="last_month_income != null" >
+                #{last_month_income},
+            </if>
+            <if test="month_income != null" >
+                #{month_income},
+            </if>
+            <if test="week_income != null" >
+                #{week_income},
+            </if>
+            <if test="day_income != null" >
+                #{day_income},
+            </if>
+            <if test="update_time != null" >
+                #{update_time},
+            </if>
+            <if test="visit_times != null" >
+                #{visit_times},
+            </if>
+            <if test="course_num != null" >
+                #{course_num},
+            </if>
+            <if test="balance != null" >
+                #{balance},
+            </if>
+            <if test="day_sale != null" >
+                #{day_sale},
+            </if>
+            <if test="month_sale != null" >
+                #{month_sale},
+            </if>
+        </trim>
+    </insert>
+    <update id="insertShopStatistics" parameterType="hashmap" >
+        update t_shop_statistics
+        <set >
+            <if test="customer_num_total != null" >
+                customer_num_total=customer_num_total+#{customer_num_total},
+            </if>
+            <if test="sale_money_total != null" >
+                sale_money_total=sale_money_total+#{sale_money_total},
+            </if>
+            <if test="sale_num_total != null" >
+                sale_num_total=sale_num_total+#{sale_num_total},
+            </if>
+            <if test="sale_income_total != null" >
+                sale_income_total=sale_income_total+#{sale_income_total},
+            </if>
+            <if test="customer_offer != null" >
+                customer_offer=customer_offer+#{customer_offer},
+            </if>
+            <if test="student_offer != null" >
+                student_offer=student_offer+#{student_offer},
+            </if>
+            <if test="last_month_income != null" >
+                last_month_income=#{last_month_income},
+            </if>
+            <if test="month_income != null" >
+                month_income=#{month_income},
+            </if>
+            <if test="week_income != null" >
+                week_income=#{week_income},
+            </if>
+            <if test="day_income != null" >
+                day_income=#{day_income},
+            </if>
+            <if test="update_time != null" >
+                update_time=#{update_time},
+            </if>
+            <if test="visit_times != null" >
+                visit_times=visit_times+#{visit_times},
+            </if>
+            <if test="course_num != null" >
+                course_num=course_num+#{course_num},
+            </if>
+            <if test="balance != null" >
+                balance=balance+#{balance},
+            </if>
+            <if test="day_sale != null" >
+                day_sale=#{day_sale},
+            </if>
+            <if test="month_sale != null" >
+                month_sale=#{month_sale},
+            </if>
+        </set>
+        where shop_id = #{shopId}
+    </update>
+
+    <!-- 获取店铺信息，关联查询出其统计信息 -->
+    <select id="selectShopAndStatistics" resultType="hashmap" parameterType="hashmap">
+        SELECT * FROM t_shop shop
+        LEFT JOIN t_shop_statistics statistics ON statistics.shop_id = shop.shop_id
+        WHERE shop.user_id = #{user_id}
+    </select>
+
+    <!-- 获取店铺统计信息 -->
+    <select id="selectShopStatistics" resultType="hashmap" parameterType="hashmap">
+        SELECT * FROM t_shop_statistics WHERE shop_id = #{shop_id}
+    </select>
+
+    <!-- 根据shop_id，店铺统计课程数量加1 -->
+    <update id="addShopStatisticsCourseNum" parameterType="hashmap">
+        UPDATE t_shop_statistics SET course_num = course_num + 1, update_time = #{update_time}
+        WHERE shop_id = #{shop_id}
+    </update>
+
+    <!-- 根据shop_id，店铺统计课程数量减1 -->
+    <update id="subShopStatisticsCourseNum" parameterType="hashmap">
+        UPDATE t_shop_statistics SET course_num = course_num - 1, update_time = #{update_time}
+        WHERE shop_id = #{shop_id}
+    </update>
+
+    <!-- 根据shop_id，店铺统计访问数量加1 -->
+    <update id="addShopStatisticsVisitTimes" parameterType="hashmap">
+		UPDATE t_shop_statistics SET visit_times = visit_times + 1, update_time = #{update_time}
+		WHERE shop_id = #{shop_id}
+	</update>
+	
+</mapper>

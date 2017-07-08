@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:util="http://www.springframework.org/schema/util" xmlns:rabbit="http://www.springframework.org/schema/rabbit" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	   xmlns:task="http://www.springframework.org/schema/task"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.0.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util-4.0.xsd
+    http://www.springframework.org/schema/rabbit
+    http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd
+    http://www.springframework.org/schema/task
+    http://www.springframework.org/schema/task/spring-task-3.2.xsd
+    http://code.alibabatech.com/schema/dubbo
+    http://code.alibabatech.com/schema/dubbo/dubbo.xsd"
+	   default-lazy-init="false">
+	<context:annotation-config/>
+	<task:annotation-driven  scheduler="messageScheduler"/>
+	<task:scheduler id="messageScheduler" pool-size="20"/>
+	<context:component-scan base-package="qingning.mq.server.imp,qingning.mq.server.scheduler" />
+	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+	<import resource="classpath:db-config.xml"/>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer" p:basePackage="qingning.mq.persistence.mybatis" p:sqlSessionFactoryBeanName="sqlSessionFactory" />
+	<bean id="jedisUtils" class="qingning.common.util.JedisUtils" >
+		<constructor-arg type="java.lang.String" value="classpath:application.properties" />
+	</bean>
+
+	<bean id="jsonMessageConverter" class="qingning.server.rabbitmq.RabbitMQMessageConverter"/>
+	<rabbit:connection-factory id="connectionFactory"
+		username="${rmq.manager.user}" password="${rmq.manager.password}"
+		host="${rmq.ip}" port="${rmq.port}"/>
+	<rabbit:queue name="${rmq.queue}" durable="true" auto-delete="false"
+		exclusive="false"/>
+	<rabbit:direct-exchange name="${rmq.exchange}" durable="true" auto-delete="false">
+		<rabbit:bindings>
+			<rabbit:binding queue="${rmq.queue}" key="${rmq.queue.key}"/>
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+	<rabbit:admin connection-factory="connectionFactory"/>	
+   	<bean id="listener" class="qingning.server.rabbitmq.RabbitMQMessageListener"/>
+	<rabbit:listener-container connection-factory="connectionFactory" acknowledge="auto"
+		auto-startup="false">
+		<rabbit:listener queues="${rmq.queue}" ref="listener"/>
+	</rabbit:listener-container>
+	<rabbit:admin connection-factory="imConnectionFactory"/>		
+	<bean id="imMsgService" class="qingning.mq.server.imp.ImMsgServiceImp" />	
+	<rabbit:connection-factory id="imConnectionFactory"
+		username="${im.rmq.manager.user}" password="${im.rmq.manager.password}"
+		host="${im.rmq.ip}" port="${im.rmq.port}"/>
+	<rabbit:queue name="${im.rmq.queue}" durable="false" auto-delete="false"
+		exclusive="false"/>
+	<rabbit:direct-exchange name="${im.rmq.exchange}" durable="true" auto-delete="false">
+		<rabbit:bindings>
+			<rabbit:binding queue="${im.rmq.queue}" key="${im.rmq.queue.key}"/>
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+	<bean id="imListener" class="qingning.server.rabbitmq.ImRabbitMQMessageListener"/>
+	<rabbit:listener-container connection-factory="imConnectionFactory" acknowledge="auto"
+		auto-startup="false">
+		<rabbit:listener queues="${im.rmq.queue}" ref="imListener"/>
+	</rabbit:listener-container>
+
+	<bean id="mqThreadPool" class="qingning.server.rabbitmq.MqThreadPool" />
+
+	<bean id="SaveCourseMessageServer" class="qingning.mq.server.imp.SaveCourseMessageService"/>
+	<bean id="SaveAudioMessageServer" class="qingning.mq.server.imp.SaveCourseAudioService"/>
+
+
+	<bean id="PlatformCoursesServer" class="qingning.mq.server.imp.PlatformCoursesServerImpl"/>
+	<bean id="CacheSyncDatabaseServer" class="qingning.mq.server.imp.CacheSyncDatabaseServerImpl"/>
+	<bean id="MessagePushServer" class="qingning.mq.server.imp.MessagePushServerImpl">
+	</bean>
+	<bean id="LecturerCoursesServer" class="qingning.mq.server.imp.LecturerCoursesServerImpl">
+	</bean>
+
+	<bean id="LogServer" class="qingning.mq.server.imp.LogServiceImpl"/>
+
+	<bean id="CourseRobotService" class="qingning.mq.server.imp.CourseRobotSevice"></bean>
+
+	<bean id="mongoDB" class="qingning.mq.persistence.mongo.MongoDB">
+		<property name="ip" value="${mongodb.ip}"/>
+		<property name="port" value="${mongodb.port}"/>
+		<property name="maxConnection" value="${mongodb.maxConnection}"/>
+		<property name="outTime" value="${mongodb.outTime}"/>
+		<property name="maxWait" value="${mongodb.maxWait}"/>
+		<property name="maxBlockThreads" value="${mongodb.maxBlockThreads}"/>
+		<property name="maxConnIdleTime" value="${mongodb.maxConnIdleTime}"/>
+		<property name="maxConnLifeTime" value="${mongodb.maxConnLifeTime}"/>
+		<property name="socketOutTime" value="${mongodb.socketOutTime}"/>
+		<property name="socketKeepAlive" value="${mongodb.socketKeepAlive}"/>
+	</bean>
+	
+	<bean id="lbsAmpsLocation" class="qingning.mq.utils.imp.LbsAmpsLocation">
+		<property name="accessKey" value="8a4301998a78a7e7cc8908fe68d80d95"/>
+	</bean>
+	<bean id="baiduLocationUtils" class="qingning.mq.utils.imp.BaiduLocationUtils">
+		<property name="accessKey" value="BZIutcMoyKGuZ2iHiISgoYumuwZ9aqUQ"/>
+	</bean>
+	<bean id="commonLocationUtils" class="qingning.mq.utils.CommonLocationUtils">
+		<property name="locationUtilsList">
+			<list>
+				<ref bean="lbsAmpsLocation"/>
+				<ref bean="baiduLocationUtils"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="MainBusinessTask" class="qingning.mq.server.scheduler.MainBusinessTask">
+	</bean>
+
+	<bean id="ImMsgServiceImp" class="qingning.mq.server.imp.ImMsgServiceImp">
+	</bean>
+</beans>
