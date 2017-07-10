@@ -54,7 +54,7 @@
                     <param name="total_page" type="string"/>
                     <param name="list" type="list">
                         <param name="place_id" default="0" type="string"/>
-                        <param name="place_name" type="long"/>
+                        <param name="place_name" fieldname="shop_name" type="long"/>
                     </param>
                     <param name="total_count" type="long" />
                     <param name="total_page" type="long" />
