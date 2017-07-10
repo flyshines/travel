@@ -37,6 +37,28 @@ public class UserController extends AbstractController{
 	}
 
 	/**
+	 * 查询用户信息
+	 *
+	 * @param accessToken 后台安全证书
+	 * @param version     版本号
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/user/info", method = RequestMethod.GET)
+	public
+	@ResponseBody
+	ResponseEntity getUserInfo(
+			@RequestHeader("access_token") String accessToken,
+			@RequestHeader("version") String version
+	) throws Exception {
+		RequestEntity requestEntity = this.createRequestEntity("UserServer", "userInfo", accessToken, version);
+		ResponseEntity responseEntity = this.process(requestEntity, serviceManger, message);
+		Map<String, Object> resultMap = (Map<String, Object>) responseEntity.getReturnData();
+		responseEntity.setReturnData(resultMap);
+		return responseEntity;
+	}
+
+	/**
 	 * 获取系统时间
 	 *
 	 * @return
@@ -104,28 +126,6 @@ public class UserController extends AbstractController{
 		ResponseEntity responseEntity = this.process(requestEntity, serviceManger, message);
 
 		//根据相关条件将server_url列表信息返回
-		Map<String, Object> resultMap = (Map<String, Object>) responseEntity.getReturnData();
-		responseEntity.setReturnData(resultMap);
-		return responseEntity;
-	}
-
-	/**
-	 * 查询用户信息
-	 *
-	 * @param accessToken 后台安全证书
-	 * @param version     版本号
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/user/info", method = RequestMethod.GET)
-	public
-	@ResponseBody
-	ResponseEntity getUserInfo(
-			@RequestHeader("access_token") String accessToken,
-			@RequestHeader("version") String version
-	) throws Exception {
-		RequestEntity requestEntity = this.createRequestEntity("UserServer", "userInfo", accessToken, version);
-		ResponseEntity responseEntity = this.process(requestEntity, serviceManger, message);
 		Map<String, Object> resultMap = (Map<String, Object>) responseEntity.getReturnData();
 		responseEntity.setReturnData(resultMap);
 		return responseEntity;

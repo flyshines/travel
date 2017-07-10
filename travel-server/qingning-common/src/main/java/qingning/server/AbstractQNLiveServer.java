@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public abstract class AbstractQNLiveServer implements QNSharingServer {
-	private static final Logger logger   = LoggerFactory.getLogger(AbstractController.class);
+	private static final Logger logger   = LoggerFactory.getLogger(AbstractQNLiveServer.class);
 	private Map<String, FunctionInfo> functionInfoMap = new HashMap<String, FunctionInfo>();
 	private Map<String, Method> functionInfoMethodMap = new HashMap<String, Method>();
 
@@ -249,9 +249,7 @@ public abstract class AbstractQNLiveServer implements QNSharingServer {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Object processReturnValue(RequestEntity reqEntity, Object outputValue) throws Exception{
-		logger.debug("===============================");
 		FunctionInfo functionInfo = this.functionInfoMap.get(reqEntity.getFunctionName());
-		logger.debug("===============================");
 		if(outputValue == null || MiscUtils.isEmpty(functionInfo.getOutputParameterList())){
 			return outputValue;
 		}
@@ -259,13 +257,9 @@ public abstract class AbstractQNLiveServer implements QNSharingServer {
 		if(this.isReturnObject(reqEntity)){
 			return outputValue;
 		}
-		logger.debug("===============================");
 		List<OutputParameter> list = functionInfo.getOutputParameterList();
-		logger.debug("===============================");
 		OutputParameter firstParameter = list.get(0);
-		logger.debug("===============================");
 		boolean isList = Constants.SPECIAL.equals(firstParameter.getName()) && Constants.SYSLIST.equals(firstParameter.getType());
-		logger.debug("===============================");
 		if(isList){
 			if(MiscUtils.isEmpty(outputValue)){
 				return new ArrayList<Object>();
@@ -275,23 +269,21 @@ public abstract class AbstractQNLiveServer implements QNSharingServer {
 		}
 
 		if(outputValue instanceof Map){
-			logger.debug("===============================");
 			procRtnValue(functionInfo.getOutputParameterList(), (Map)outputValue);
 		} else if(outputValue instanceof Collection){
-			logger.debug("===============================");
 			Collection outputValueCol = (Collection)outputValue;
 			if(!outputValueCol.isEmpty()){
 				for(Object obj : outputValueCol){
 					if(!(obj instanceof Map)){
 						throw new QNLiveException("000103");
 					}
-					logger.debug("===============================");
 					procRtnValue(firstParameter.getOutputParameterList(), (Map)obj);
 				}
 			}
 		} else {
 			throw new QNLiveException("000103");
 		}
+		logger.debug("======Respones value:"+outputValue.toString());
 		return outputValue;
 	}
 
