@@ -39,6 +39,8 @@ public class UserModuleServerImpl implements IUserModuleServer {
     private TicketMapper ticketMapper;
     @Autowired(required = true)
     private ExtensionMapper extensionMapper;
+    @Autowired(required = true)
+    private ShopMapper shopMapper;
 
 
 
@@ -237,6 +239,17 @@ public class UserModuleServerImpl implements IUserModuleServer {
     @Override
     public List<Map<String, Object>> findBannerList() {
         return extensionMapper.selectExtension();
+    }
+
+    @Override
+    public Map<String, Object> getShopList(Map<String, Object> param) {
+        PageBounds page = new PageBounds(Integer.valueOf(param.get("page_num").toString()),Integer.valueOf(param.get("page_size").toString()));
+        PageList<Map<String,Object>> result = shopMapper.selectShopList(param,page);
+        Map<String,Object> res = new HashMap<>();
+        res.put("list",result);
+        res.put("total_count",result.getTotal());
+        res.put("total_page",result.getPaginator().getTotalPages());
+        return res;
     }
 
 }

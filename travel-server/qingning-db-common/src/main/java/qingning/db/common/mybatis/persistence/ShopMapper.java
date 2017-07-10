@@ -1,4 +1,7 @@
 package qingning.db.common.mybatis.persistence;
+import qingning.db.common.mybatis.pageinterceptor.domain.PageBounds;
+import qingning.db.common.mybatis.pageinterceptor.domain.PageList;
+
 import java.util.List;
 import java.util.Map;
 
@@ -22,29 +25,15 @@ public interface ShopMapper {
 	 * @param reqMap
 	 * @return
 	 */
-	Map<String, Object> selectShopInfo(Map<String, Object> reqMap);
+	PageList<Map<String,Object>> selectShopList(Map<String, Object> param, PageBounds page);
+
+
 	/**
 	 * 更新店铺信息
 	 * @param reqMap
 	 * @return
 	 */
 	int updateShopInfo(Map<String, Object> reqMap);
-	/**
-	 * 查询系统配置表详情
-	 * @param rqParam
-	 * @return
-	 */
-	Map<String, Object> selectSystemConfig(Map<String, Object> rqParam);
-	/**
-	 * 分页获取店铺的客户统计，并关联查询客户信息
-	 * @param reqMap
-	 * @return
-	 */
-	List<Map<String, Object>> selectCustomerStatistics(Map<String, Object> reqMap);
-	/**
-	 * 根据用户id获取店铺信息
-	 * @param userId
-	 * @return
-	 */
-	Map<String, Object> selectShopByUserId(String userId);
+
+
 }

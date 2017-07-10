@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="qingning.dbcommon.mybatis.persistence.CourseCommentMapper" >
+<mapper namespace="qingning.db.common.mybatis.persistence.CourseCommentMapper" >
 
 	<!-- 分页获取该课程的评论列表，关联查询出用户信息 -->
 	<select id="selectCommentListByCourseId" resultType="hashmap" parameterType="hashmap">
