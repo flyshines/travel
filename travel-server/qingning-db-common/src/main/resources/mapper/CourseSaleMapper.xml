@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="qingning.dbcommon.mybatis.persistence.CourseSaleMapper" >
+<mapper namespace="qingning.db.common.mybatis.persistence.CourseSaleMapper" >
 	<!-- 获取用户购买的课程 -->
 	<select id="findUserCourse" resultType="hashmap" parameterType="hashmap" >
 		select t_course.course_id,t_course.course_url,t_course.course_type,t_course.course_title,t_course.lecturer_name,t_course.lecturer_title,t_course.course_duration, t_course_sale.position

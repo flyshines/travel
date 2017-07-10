@@ -1,133 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans        
-    http://www.springframework.org/schema/beans/spring-beans.xsd        
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
     http://www.springframework.org/schema/context
 	http://www.springframework.org/schema/context/spring-context.xsd
     http://www.springframework.org/schema/rabbit
     http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd">
-    
-	<bean id="message" class="qingning.common.entity.MessageEntity">
-		<property name="messages">
-			<map>
-				<entry key="0" value="处理成功"/>
-				<entry key="000001" value="服务不存在"/>
-				<entry key="000002" value="请求太频繁"/>
-				<entry key="000003" value="访问Token验证失败"/>
-				<entry key="000004" value="输入数据格式不正确"/>
-				<entry key="000005" value="用户不存在"/>
-				<entry key="000006" value="分页参数输入错误"/>
-				<entry key="000007" value="appName不存在"/>
-				<entry key="000099" value="系统错误"/>				
-				<entry key="000100" value="必填参数为空"/>
-				<entry key="000101" value="参数类型错误"/>
-				<entry key="000102" value="返回参数类型错误"/>
-				<entry key="000103" value="功能的返回参数定义错误"/>
-				<entry key="000104" value="信息已经被其他用户更新，请刷新重试"/>
-				<entry key="000105" value="数据已经处理，不可以再次处理"/>
-				
-				<entry key="100002" value="直播间不存在"/>
-				<entry key="100003" value="直播间信息已经被修改，请刷新同步"/>
-				<entry key="100004" value="课程不存在"/>
-				<entry key="100005" value="更新失败"/>
-				<entry key="100006" value="目前讲师不能创建多个直播间"/>
-				<entry key="100007" value="修改直播间参数不足"/>
-				<entry key="100008" value="参数范围不正确"/>
-				<entry key="100009" value="金额格式错误"/>
-				<entry key="100010" value="课程状态不正确，无法修改"/>
-				<entry key="100011" value="课程状态不正确，无法进行编辑"/>
-				<entry key="100012" value="课程状态不正确，无法上传PPT"/>
-				<entry key="100013" value="该课程不属于当前用户"/>
-				<entry key="100014" value="已经上传PPT，无法再次上传"/>
-				<entry key="100015" value="创建IM群组失败"/>
-				<entry key="100016" value="无效的直播间"/>
-				<entry key="100017" value="直播间名称不能超过三十个字符"/>
-				<entry key="100018" value="直播间简介不能超过一百个字符"/>
-				<entry key="100019" value="课程的开始时间要在当前时间的10分钟后"/>
-				<entry key="100020" value="课程标题不能超过三十个字符"/>
-				<entry key="100021" value="课程简介不能超过1000个字符"/>
-				<entry key="100023" value="结束课程时，不允许修改课程信息"/>
-				<entry key="100024" value="课程分成比要大于等于0，小于等于50"/>
-				<entry key="100025" value="分享链接已经过期"/>
-				<entry key="100026" value="不可以成为自己直播间的分销员"/>
-				<entry key="100027" value="已经是直播间的分销员"/>
-				<entry key="100028" value="分销员不属于当前用户"/>
-				<entry key="100029" value="课程之间的开始时间要有三十分钟的间隔"/>
-				<entry key="100030" value="预告课程和非预告课程只能 降序 降序 或 升序 降序 排列"/>
-				<entry key="100031" value="直播间不存在，数据异常"/>
-				<entry key="100032" value="课程没开始前，不可以结束"/>
-				<entry key="100033" value="获取图片失败"/>
-				<entry key="100034" value="修改的课程开始时间不能早于当前时间"/>
 
-				<entry key="110003" value="关注直播间操作失败"/>
-				<entry key="110004" value="直播间属于当前用户，不需要关注"/>
-				<entry key="110005" value="用户已经关注直播间"/>
-				<entry key="110006" value="用户未关注当前直播间"/>
+    <bean id="message" class="qingning.common.entity.MessageEntity">
+        <property name="messages">
+            <map>
+                <entry key="0" value="处理成功"/>
+                <entry key="000001" value="服务不存在"/>
+                <entry key="000002" value="请求太频繁"/>
+                <entry key="000003" value="访问Token验证失败"/>
+                <entry key="000004" value="输入数据格式不正确"/>
+                <entry key="000005" value="用户不存在"/>
+                <entry key="000006" value="分页参数输入错误"/>
+                <entry key="000099" value="系统错误"/>
+                <entry key="000100" value="必填参数为空"/>
+                <entry key="000101" value="参数类型错误"/>
+                <entry key="000102" value="返回参数类型错误"/>
+                <entry key="000103" value="功能的返回参数定义错误"/>
+                <entry key="000104" value="信息已经被其他用户更新，请刷新重试"/>
+                <entry key="000105" value="数据已经处理，不可以再次处理"/>
 
-				<entry key="120001" value="用户名或者密码不正确"/>
-				<entry key="120002" value="用户不存在"/>
-				<entry key="120003" value="注册IM失败"/>
-				<entry key="120004" value="分页参数不完整"/>
-				<entry key="120005" value="已经参与该课程，不能重复参与"/>
-				<entry key="120006" value="课程密码错误"/>
-				<entry key="120007" value="学员未加入该课程"/>
-				<entry key="120008" value="微信授权code方式登录失败"/>
-				<entry key="120009" value="课程不存在"/>
-				<entry key="120010" value="打赏类型不存在"/>
-				<entry key="120011" value="参数范围不正确"/>				
-				<entry key="120012" value="用户不是分销员"/>
-				<entry key="120013" value="分销课程不存在"/>
-				<entry key="120014" value="用户不是直播间的分销员"/>
-				<entry key="120015" value="微信支付失败"/>
-				<entry key="120017" value="微信支付失败"/>
-				<entry key="120018" value="直播间不存在"/>
-				<entry key="120019" value="分享链接已经过期"/>
-				<entry key="120020" value="生成分销员分享链接有效期不正确"/>
-				<entry key="120021" value="分销员分销关系已经过期"/>
+                <entry key="100005" value="更新失败"/>
+                <entry key="100008" value="参数范围不正确"/>
+                <entry key="100009" value="金额格式错误"/>
+                <entry key="100014" value="已经上传PPT，无法再次上传"/>
+                <entry key="100033" value="获取图片失败"/>
 
-				<entry key="120022" value="微信支付结果查询失败"/>
 
-				<entry key="120016" value="平台信息不能为空"/>
+                <entry key="120001" value="用户名或者密码不正确"/>
+                <entry key="120002" value="用户不存在"/>
+                <entry key="120004" value="分页参数不完整"/>
+                <entry key="120008" value="微信授权code方式登录失败"/>
+                <entry key="120011" value="参数范围不正确"/>
+                <entry key="120015" value="微信支付失败"/>
+                <entry key="120017" value="微信支付失败"/>
 
-				<entry key="130001" value="电话号码有误"/>
-				<entry key="130002" value="验证码有误"/>
-				<entry key="130003" value="直播间没有手机号"/>
-				<entry key="130004" value="直播间已绑定手机号"/>
-				<entry key="130005" value="短信发送太频繁"/>
-				<entry key="130006" value="验证码发送失败"/>
+                <entry key="120022" value="微信支付结果查询失败"/>
+
+                <entry key="120016" value="平台信息不能为空"/>
+
+                <entry key="130001" value="电话号码有误"/>
+                <entry key="130002" value="验证码有误"/>
+                <entry key="130005" value="短信发送太频繁"/>
+                <entry key="130006" value="验证码发送失败"/>
                 <entry key="130007" value="验证码每天只能发送5次"/>
                 <entry key="130008" value="电话号码已绑定直播间"/>
                 <entry key="130009" value="验证码已过时"/>
-				<entry key="140001" value="上传用户数据失败"/>
+                <entry key="140001" value="上传用户数据失败"/>
 
-				<entry key="150001" value="绑定服务号过程失败"/>
-				<entry key="150002" value="非认证服务号"/>
+                <entry key="150001" value="绑定服务号过程失败"/>
+                <entry key="150002" value="非认证服务号"/>
 
-				<entry key="160001" value="正在直播的课程无法被删除"/>
-				<entry key="160002" value="当前操作的课程已产生收益,删除操作失败"/>
-				<entry key="160003" value="没有权限删除他人创建的课程"/>
-				<entry key="160004" value="当前课程已被删除"/>
-
-				<entry key="170001" value="用户没有收入,尽测试显示"/>
-				<entry key="170002" value="用户已经有一条申请中的提现记录,不能重复提现"/>
-				<entry key="170003" value="提现金额必须大于100元"/>
-				<entry key="170004" value="未找到提现记录或重复提现"/>
-
-				<entry key="180001" value="提现金额不能大于账户余额"/>
-				<entry key="190001" value="没有查到店铺信息"/>
-				<entry key="210001" value="该系列不属于当前用户"/>
-				<entry key="210002" value="课程不属于当前系列"/>
-				<entry key="210003" value="课程只能加入一个系列"/>
-				<entry key="210003" value="系列不存在"/>			
-				<entry key="210005" value="已开通店铺，不能重复开通"/>
-
-				<entry key="210006" value="用户操作失败"/>
-			</map>
+                <entry key="170004" value="未找到提现记录或重复提现"/>
 
 
-		</property>
-	</bean>	
+                <entry key="210006" value="用户操作失败"/>
+            </map>
+
+
+        </property>
+    </bean>
 </beans>

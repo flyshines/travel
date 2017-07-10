@@ -36,28 +36,60 @@ public class UserController extends AbstractController{
 		return responseEntity;
 	}
 
+
+
 	/**
-	 * 获取系统时间
+	 * 查询用户信息
 	 *
+	 * @param accessToken 后台安全证书
+	 * @param version     版本号
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/client/information", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/info", method = RequestMethod.GET)
 	public
 	@ResponseBody
-	ResponseEntity collectClientInformation(HttpEntity<Object> entity,
-											@RequestHeader(value = "access_token", defaultValue = "") String accessToken) throws Exception {
-		RequestEntity requestEntity = this.createRequestEntity("UserServer", "logUserInfo", accessToken, null);
-		@SuppressWarnings("unchecked")
-		Map<String, String> inputParameters = (Map<String, String>) entity.getBody();
-		inputParameters.put("ip", ServerUtils.getRequestIP());
-		if (inputParameters.containsKey("login_id")) {
-			inputParameters.put("union_id", inputParameters.get("login_id"));
-		}
-		requestEntity.setParam(entity.getBody());
+	ResponseEntity getUserInfo(
+			@RequestHeader("access_token") String accessToken,
+			@RequestHeader("version") String version
+	) throws Exception {
+		RequestEntity requestEntity = this.createRequestEntity("UserServer", "userInfo", accessToken, version);
 		ResponseEntity responseEntity = this.process(requestEntity, serviceManger, message);
+		Map<String, Object> resultMap = (Map<String, Object>) responseEntity.getReturnData();
+		responseEntity.setReturnData(resultMap);
 		return responseEntity;
 	}
+
+
+	/**
+	 * 查询景区列表
+	 *
+	 * @param accessToken 后台安全证书
+	 * @param version     版本号
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/shop/list", method = RequestMethod.GET)
+	public
+	@ResponseBody
+	ResponseEntity shopList(
+			@RequestParam(value = "page_size", defaultValue = "10") long pageSize,
+			@RequestParam(value = "page_num", defaultValue = "1") long pageNum,
+			@RequestHeader("access_token") String accessToken,
+			@RequestHeader("version") String version
+	) throws Exception {
+		RequestEntity requestEntity = this.createRequestEntity("UserServer", "shopList", accessToken, version);
+		Map<String, Object> paramCode = new HashMap<>();
+		paramCode.put("page_size", pageSize);
+		paramCode.put("page_num", pageNum);
+		requestEntity.setParam(paramCode);
+		ResponseEntity responseEntity = this.process(requestEntity, serviceManger, message);
+		Map<String, Object> resultMap = (Map<String, Object>) responseEntity.getReturnData();
+		responseEntity.setReturnData(resultMap);
+		return responseEntity;
+	}
+
+
 
 	/**
 	 * 获得上传到七牛token
@@ -110,99 +142,6 @@ public class UserController extends AbstractController{
 	}
 
 	/**
-	 * 查询用户信息
-	 *
-	 * @param accessToken 后台安全证书
-	 * @param version     版本号
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/user/info", method = RequestMethod.GET)
-	public
-	@ResponseBody
-	ResponseEntity getUserInfo(
-			@RequestHeader("access_token") String accessToken,
-			@RequestHeader("version") String version
-	) throws Exception {
-		RequestEntity requestEntity = this.createRequestEntity("UserServer", "userInfo", accessToken, version);
-		ResponseEntity responseEntity = this.process(requestEntity, serviceManger, message);
-		Map<String, Object> resultMap = (Map<String, Object>) responseEntity.getReturnData();
-		responseEntity.setReturnData(resultMap);
-		return responseEntity;
-	}
-
-	/**
-	 * 查询用户信息
-	 *
-	 * @param accessToken 后台安全证书
-	 * @param version     版本号
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/userinfo/update", method = RequestMethod.PUT)
-	public
-	@ResponseBody
-	ResponseEntity getUserInfo(
-			HttpEntity<Object> entity,
-			@RequestHeader("access_token") String accessToken,
-			@RequestHeader("version") String version
-	) throws Exception {
-		RequestEntity requestEntity = this.createRequestEntity("UserServer", "updateUserInfo", accessToken, version);
-		requestEntity.setParam(entity.getBody());
-
-		//根据相关条件将server_url列表信息返回
-		ResponseEntity responseEntity = this.process(requestEntity, serviceManger, message);
-		return responseEntity;
-	}
-
-
-	/**
-	 * 获取我的消费记录
-	 *
-	 * @param page_count
-	 * @param position
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/myCostList", method = RequestMethod.GET)
-	public
-	@ResponseBody
-	ResponseEntity getMyCostList(
-			@RequestParam(value = "page_count", defaultValue = "20") String page_count,
-			@RequestParam(value = "position", defaultValue = "") String position,
-			@RequestHeader("access_token") String accessToken,
-			@RequestHeader("version") String version
-	) throws Exception {
-		RequestEntity requestEntity = this.createRequestEntity("UserServer", "getMyCostList", accessToken, version);
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("page_count", page_count);
-		param.put("position", position);
-		requestEntity.setParam(param);
-		ResponseEntity responseEntity = this.process(requestEntity, serviceManger, message);
-		return responseEntity;
-	}
-
-	/**
-	 * 提交意见反馈
-	 *
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/feedback", method = RequestMethod.POST)
-	public
-	@ResponseBody
-	ResponseEntity feedback(
-			HttpEntity<Object> entity,
-			@RequestHeader("access_token") String accessToken,
-			@RequestHeader("version") String version
-	) throws Exception {
-		RequestEntity requestEntity = this.createRequestEntity("UserServer", "feedback", accessToken, version);
-		requestEntity.setParam(entity.getBody());
-		ResponseEntity responseEntity = this.process(requestEntity, serviceManger, message);
-		return responseEntity;
-	}
-
-	/**
 	 * 获取系统配置信息
 	 *
 	 * @param config_key
@@ -225,22 +164,6 @@ public class UserController extends AbstractController{
 		requestEntity.setParam(param);
 		ResponseEntity responseEntity = this.process(requestEntity, serviceManger, message);
 		return responseEntity;
-	}
-
-	/**
-	 * 解码并重定向到分享地址
-	 *
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/sys/decodeUrl", method = RequestMethod.GET)
-	public void decodeUrl(
-			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		//获取请求参数
-		String url = request.getParameter("url");
-
-		//重定向
-		response.sendRedirect(url);
 	}
 
 	/**

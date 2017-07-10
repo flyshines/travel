@@ -143,4 +143,10 @@ public interface IUserModuleServer {
 	Map<String,Object> findTicketInfo();
 
 	List<Map<String,Object>> findBannerList();
+
+	/**商户列表
+	 * @param reqMap
+	 * @return
+	 */
+	Map<String,Object> getShopList(Map<String, Object> reqMap);
 }

@@ -1,7 +1,5 @@
 package qingning.user.server.imp;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.qiniu.common.Zone;
 import com.qiniu.storage.BucketManager;
@@ -9,28 +7,17 @@ import com.qiniu.storage.Configuration;
 import com.qiniu.storage.model.FetchRet;
 import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import qingning.common.entity.QNLiveException;
 import qingning.common.entity.RequestEntity;
-import qingning.common.entity.TemplateData;
 import qingning.common.util.*;
 import qingning.server.AbstractQNLiveServer;
-import qingning.server.JedisBatchCallback;
-import qingning.server.JedisBatchOperation;
 import qingning.server.annotation.FunctionName;
 import qingning.server.rpc.manager.IUserModuleServer;
 import qingning.user.server.other.*;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
-import redis.clients.jedis.Response;
-import redis.clients.jedis.Tuple;
-
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class UserServerImpl extends AbstractQNLiveServer {
@@ -101,6 +88,23 @@ public class UserServerImpl extends AbstractQNLiveServer {
     }
 
 
+    /**
+     * 商户列表
+     *
+     * @param reqEntity
+     * @return
+     * @throws Exception
+     */
+    @SuppressWarnings("unchecked")
+    @FunctionName("shopList")
+    public Map<String, Object> shopList(RequestEntity reqEntity) throws Exception {
+        Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
+        Map<String, Object> userList = userModuleServer.getShopList(reqMap);
+        return userList;
+
+    }
+
+
 
     @SuppressWarnings("unchecked")
     @FunctionName("qiNiuUploadToken")
@@ -132,87 +136,7 @@ public class UserServerImpl extends AbstractQNLiveServer {
         return resultMap;
     }
 
-    /**
-     * 移动端登录
-     *
-     * @param reqEntity
-     * @return
-     * @throws Exception
-     */
-    @SuppressWarnings("unchecked")
-    @FunctionName("userLogin")
-    public Map<String, Object> userLogin(RequestEntity reqEntity) throws Exception {
-        Map<String, Object> resultMap = new HashMap<>();
-        Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
-        Map<String, Object> loginInfoMap = userModuleServer.getLoginInfoByLoginIdAndLoginType(reqMap);
 
-        //int login_type_input = Integer.parseInt(reqMap.get("login_type").toString());
-
-        //switch (login_type_input) {
-        // case 0: // 微信登录
-        // 如果登录信息为空，则进行注册
-        if (MiscUtils.isEmpty(loginInfoMap)) {
-            Jedis jedis = jedisUtils.getJedis();
-            // 设置默认用户头像
-            String transferAvatarAddress = (String) reqMap.get("avatar_address");
-            if (!MiscUtils.isEmpty(transferAvatarAddress)) {
-                try {
-                    //transferAvatarAddress = qiNiuFetchURL(reqMap.get("avatar_address").toString());
-                } catch (Exception e) {
-                    transferAvatarAddress = null;
-                }
-            }
-            if (MiscUtils.isEmpty(transferAvatarAddress)) {
-                transferAvatarAddress = MiscUtils.getConfigByKey("default_avatar_address");
-            }
-
-            reqMap.put("avatar_address", transferAvatarAddress);
-            reqMap.put("last_login_ip", reqEntity.getIp());
-
-            if (reqMap.get("nick_name") == null || StringUtils.isBlank(reqMap.get("nick_name").toString())) {
-                reqMap.put("nick_name", "用户" + jedis.incrBy(Constants.CACHED_KEY_USER_NICK_NAME_INCREMENT_NUM, 1));
-            }
-
-            Map<String, String> dbResultMap = userModuleServer.initializeRegisterUser(reqMap);
-
-            // 生成access_token，将相关信息放入缓存，构造返回参数
-            processLoginSuccess(1, dbResultMap, null, resultMap);
-
-        } else {
-            // 构造相关返回参数 TODO
-            processLoginSuccess(2, null, loginInfoMap, resultMap);
-        }
-                /*break;
-
-            case 1: // QQ登录
-                // TODO
-                break;
-
-            case 2: // 手机号登录
-                if (MiscUtils.isEmpty(loginInfoMap)) {
-                    // 抛出用户不存在
-                    throw new QNLiveException("120002");
-                } else {
-                    // 校验用户名和密码
-                    // 登录成功
-                    if (reqMap.get("certification").toString().equals(loginInfoMap.get("passwd").toString())) {
-                        // 构造相关返回参数 TODO
-                        processLoginSuccess(2, null, loginInfoMap, resultMap);
-                    } else {
-                        // 抛出用户名或者密码错误
-                        throw new QNLiveException("120001");
-                    }
-                }
-                break;
-            case 4:
-                if (MiscUtils.isEmpty(loginInfoMap)) {
-                    throw new QNLiveException("120002");
-                }
-                break;
-        }
-*/
-        return resultMap;
-    }
 
 
     /**
@@ -260,7 +184,7 @@ public class UserServerImpl extends AbstractQNLiveServer {
                 }
             }
         }
-        return new HashMap<String, Object>();
+        return new HashMap<>();
     }
 
     /**
@@ -659,68 +583,9 @@ public class UserServerImpl extends AbstractQNLiveServer {
         return resultStr;
     }
 
-    /**
-     * 提交反馈信息
-     *
-     * @param reqEntity
-     * @return
-     * @throws Exception
-     */
-    @FunctionName("feedback")
-    public Map<String, Object> feedback(RequestEntity reqEntity) throws Exception {
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-        @SuppressWarnings("unchecked")
-        Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
-        String userId = AccessTokenUtil.getUserIdFromAccessToken(reqEntity.getAccessToken());
-        reqMap.put("user_id", userId);
-        int res = userModuleServer.feedback(reqMap);
-        return resultMap;
-    }
 
-    /**
-     * 获取前端需要的系统配置
-     *
-     * @param reqEntity
-     * @return
-     * @throws Exception
-     */
-    @FunctionName("getSysConfiguration")
-    public Map<String, Object> getSysConfiguration(RequestEntity reqEntity) throws Exception {
-        Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
-        Map<String, Object> resultMap = new HashMap<>();
 
-        reqMap.put("status", "1");
-        reqMap.put("is_front", "1");
 
-        List<Map<String, Object>> sysConfigurationList = userModuleServer.findSysConfiguration(reqMap);
-        resultMap.put("config_info_list", sysConfigurationList);
-
-        return resultMap;
-    }
-
-    /**
-     * 获取登录用户购买的指定类型课程id集合
-     *
-     * @param reqEntity
-     * @return
-     * @throws Exception
-     */
-    @FunctionName("getMyCourseIdList")
-    public Map<String, Object> getMyCourseIdList(RequestEntity reqEntity) throws Exception {
-        Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
-        Map<String, Object> resultMap = new HashMap<>();
-
-        String user_id = AccessTokenUtil.getUserIdFromAccessToken(reqEntity.getAccessToken());
-        reqMap.put("user_id", user_id);
-
-		/*
-		 * 获取店铺的课程id列表
-		 */
-        List<String> myCourseIdList = userModuleServer.getMyCourseIdList(reqMap);
-
-        resultMap.put("voice_id_list", myCourseIdList);
-        return resultMap;
-    }
     /**
      * @param type         1新注册用户处理方式，2老用户处理方式
      * @param dbResultMap  当type为1时，传入该值，该值为新用户注册后返回的信息；当type为2时该值传入null
