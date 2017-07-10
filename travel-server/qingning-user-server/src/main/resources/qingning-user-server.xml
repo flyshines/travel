@@ -218,11 +218,8 @@
                     <timesLimit millisecond="100"/>
                 </auth>
                 <inputs>
-                    <param name="profit_type" type="string" require="Y,000100" format="^[0-1]$,120011"/>
-                    <param name="course_id" type="string"/>
-                    <param name="invite_code" type="string"/>
-                    <param name="shop_id" type="string" require="Y,000100"/>
-                    <param name="platform" type="string"/>
+                    <param name="bill_type" type="string" require="Y,000100" format="^[0-1]$,120011"/>
+                    <param name="ticket_id" type="string"/>
                 </inputs>
                 <outputs>
                     <param name="appId" type="string"/>

@@ -364,50 +364,20 @@ public class UserServerImpl extends AbstractQNLiveServer {
         String userId = AccessTokenUtil.getUserIdFromAccessToken(reqEntity.getAccessToken());
         insertMap.put("user_id", userId);
 
-        String profit_type = reqMap.get("profit_type").toString();
+        String billType = reqMap.get("bill_type").toString();
         String payGoodName = null;
         Integer totalFee = 0;
-        if ("0".equals(profit_type)) {
+        if ("0".equals(billType)) {
             //1.检测课程是否存在，课程不存在则给出提示（ 课程不存在，120009）
-            String courseId = reqMap.get("course_id").toString();
-            Map<String, Object> query = new HashMap<String, Object>();
-            query.put("course_id", courseId);
-            Map<String, String> courseMap = new HashMap<>();//CacheUtils.readCourse(courseId, generateRequestEntity(null, null, null, query), readCourseOperation, jedisUtils, false);
 
-            if (MiscUtils.isEmpty(courseMap)) { //如果课程不存在
-                throw new QNLiveException("120009");
-            }
-
-            String shopId = reqMap.get("shop_id").toString();
-            insertMap.put("shop_id", shopId);
-            insertMap.put("course_id", courseMap.get("course_id"));
-            insertMap.put("amount", courseMap.get("course_price"));
-            totalFee = Integer.parseInt(courseMap.get("course_price"));
-            payGoodName = MiscUtils.getConfigByKey("weixin_pay_buy_course_good_name") + "-" + MiscUtils.RecoveryEmoji(courseMap.get("course_title"));
-            insertMap.put("remark", courseMap.get("course_title"));
-            Map<String, Object> shopMap = userModuleServer.findShopInfo(shopId);
-            insertMap.put("shop_name", shopMap.get("shop_name"));
 
         } else {// 加盟
             // 获取系统当前加盟费
             List<String> paramters = new ArrayList<>();
-            String inviteJoinMoney = "invite_join_money";
-            String inviteJoinGoodName = "invite_join_good_name";
-            paramters.add(inviteJoinMoney);
-            paramters.add(inviteJoinGoodName);
-            List<Map<String, Object>> systemConfigMap = userModuleServer.findSystemConfig(paramters);
-            for (Map<String, Object> sysConfig : systemConfigMap) {
-                if (inviteJoinMoney.equals(sysConfig.get("config_value"))) {
-                    insertMap.put("amount", sysConfig.get("config_value").toString());
-                } else if (inviteJoinGoodName.equals(sysConfig.get(inviteJoinGoodName))) {
-                    payGoodName = sysConfig.get("config_value").toString();
-                }
-            }
-            insertMap.put("invite_code", reqMap.get("invite_code"));
         }
 
         //3.插入t_trade_bill表 交易信息表
-        insertMap.put("profit_type",profit_type);
+        insertMap.put("profit_type",billType);
         insertMap.put("status", 0);
         insertMap.put("create_time", new Date());
         insertMap.put("update_time", new Date());
@@ -433,7 +403,8 @@ public class UserServerImpl extends AbstractQNLiveServer {
             isWeb = true;
         }
 
-        payGoodName = new String(payGoodName.getBytes("UTF-8"));
+        //payGoodName = new String(payGoodName.getBytes("UTF-8"));
+        //TODO tickitName
 
         Map<String, String> payResultMap = TenPayUtils.sendPrePay(payGoodName, totalFee, terminalIp, outTradeNo, openid, platform);
 
