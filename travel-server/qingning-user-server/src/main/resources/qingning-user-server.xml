@@ -44,10 +44,10 @@
             <function name="shopList">
                 <auth>
                     <accessToken require="Y"/>
-                    <param name="page_num" type="long" require="N"/>
-                    <param name="page_size" type="long" require="N"/>
                 </auth>
                 <inputs>
+                    <param name="page_num" type="long" require="N"/>
+                    <param name="page_size" type="long" require="N"/>
                 </inputs>
                 <outputs>
                     <param name="total_count" type="string"/>
@@ -58,6 +58,19 @@
                     </param>
                     <param name="total_count" type="long" />
                     <param name="total_page" type="long" />
+                </outputs>
+            </function>
+            <!--商户扫码-->
+            <function name="scanCode">
+                <auth>
+                    <accessToken require="Y"/>
+                </auth>
+                <inputs>
+                    <param name="code" type="string" require="Y,000100"/>
+                    <param name="place_id" type="string" require="Y,000100"/>
+                </inputs>
+                <outputs>
+
                 </outputs>
             </function>
 

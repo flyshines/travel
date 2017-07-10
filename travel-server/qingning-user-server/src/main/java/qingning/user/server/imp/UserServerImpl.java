@@ -95,13 +95,25 @@ public class UserServerImpl extends AbstractQNLiveServer {
      * @return
      * @throws Exception
      */
-    @SuppressWarnings("unchecked")
     @FunctionName("shopList")
     public Map<String, Object> shopList(RequestEntity reqEntity) throws Exception {
         Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
         Map<String, Object> userList = userModuleServer.getShopList(reqMap);
         return userList;
 
+    }
+
+    /**
+     * 商户扫码
+     *
+     * @param reqEntity
+     * @return
+     * @throws Exception
+     */
+    @FunctionName("scanCode")
+    public Map<String, Object> scanCode(RequestEntity reqEntity) throws Exception {
+        Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
+        return null;
     }
 
 
