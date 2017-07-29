@@ -63,6 +63,11 @@
 
 
                 <entry key="210006" value="用户操作失败"/>
+                <entry key="210007" value="二维码错误"/>
+                <entry key="210008" value="二维码已过期"/>
+                <entry key="210009" value="没有查到会员信息"/>
+                <entry key="210010" value="会员已到期，请重新购买年卡"/>
+                <entry key="210011" value="今日已经进入过园区"/>
             </map>
 
 

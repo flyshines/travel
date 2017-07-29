@@ -44,7 +44,7 @@ public class WebchatController extends AbstractController {
 		String code = codes[0];
 		Map<String,String> map = new HashMap<>();
 		map.put("code",code);
-		String remote_ip_address = MiscUtils.getIpAddr(request);
+		String remote_ip_address = ServerUtils.getIpAddr(request);
 		if("0:0:0:0:0:0:0:1".equals(remote_ip_address)){
 			remote_ip_address = "127.0.0.1";
 		}
@@ -89,7 +89,7 @@ public class WebchatController extends AbstractController {
 			@RequestHeader("access_token") String accessToken,
 			@RequestHeader("version") String version, HttpServletRequest request) throws Exception {
 		RequestEntity requestEntity = this.createRequestEntity("UserServer", "generateWeixinPayBill", accessToken, version);
-		String remote_ip_address = MiscUtils.getIpAddr(request);
+		String remote_ip_address = ServerUtils.getIpAddr(request);
 		if("0:0:0:0:0:0:0:1".equals(remote_ip_address)){
 			remote_ip_address = "127.0.0.1";
 		}

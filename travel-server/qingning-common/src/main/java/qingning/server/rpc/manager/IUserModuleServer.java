@@ -149,4 +149,30 @@ public interface IUserModuleServer {
 	 * @return
 	 */
 	Map<String,Object> getShopList(Map<String, Object> reqMap);
+
+	/**获取门票价格
+	 * @return
+	 */
+	Map<String,Object> getTicketPrice();
+
+	/**插入VIP用户
+	 * @param vipInfo
+	 * @return
+	 */
+	int insertVipUser(Map<String, Object> vipInfo);
+
+	/**游客进入园区
+	 * @param param
+	 * @return
+	 */
+	int addUserVisit(Map<String, Object> param);
+
+	Map<String,Object> getVipUserInfo(String sign);
+
+	/**获取该用户今日进入该园区次数
+	 * @param user_id
+	 * @param shop_id
+	 * @return
+	 */
+	int getUserVisitCount(String user_id, String shop_id);
 }

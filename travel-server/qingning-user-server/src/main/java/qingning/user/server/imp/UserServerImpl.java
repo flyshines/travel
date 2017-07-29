@@ -75,14 +75,15 @@ public class UserServerImpl extends AbstractQNLiveServer {
         param.put("user_id",userId);
         reqEntity.setParam(param);
         Map<String, String> values = CacheUtils.readUser(userId, reqEntity, readUserOperation, jedisUtils);
-
+        //VIP标识
+        String sign = values.get("sign");
         resultMap.put("avatar_address", values.get("avatar_address"));
         resultMap.put("nick_name", MiscUtils.RecoveryEmoji(values.get("nick_name")));
-        resultMap.put("is_vip", "1");
+        resultMap.put("is_vip", sign!=null?1:0);
         resultMap.put("invalid_time", new Date());
         resultMap.put("user_id", userId);
 
-        resultMap.put("rq_code","www.baidu.com");
+        resultMap.put("rq_code",AESOperator.getInstance().encrypt(System.currentTimeMillis()+sign));
 
         return resultMap;
     }
@@ -113,7 +114,52 @@ public class UserServerImpl extends AbstractQNLiveServer {
     @FunctionName("scanCode")
     public Map<String, Object> scanCode(RequestEntity reqEntity) throws Exception {
         Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
-        return null;
+        Map<String,Object> result = null;
+        String userId = AccessTokenUtil.getUserIdFromAccessToken(reqEntity.getAccessToken());
+        String code = reqMap.get("code").toString();
+        String signAll = AESOperator.getInstance().decrypt(code);
+        Map<String,Object> param = new HashMap<>();
+        param.put("check_user_id",userId);
+        param.put("shop_id",reqMap.get("place_id"));
+        String nickName = null;
+        if(signAll!=null){
+            long time = Long.valueOf(signAll.substring(0,13));
+            long now = System.currentTimeMillis();
+            if(now-time>1000000){
+                //sign过期
+                throw new QNLiveException("210008");
+            }else{
+                String sign = signAll.substring(13,signAll.length());
+                Map<String,Object> vipInfo = userModuleServer.getVipUserInfo(sign);
+                if(vipInfo == null){
+                    //没有查到会员信息
+                    throw new QNLiveException("210009");
+                }
+                Date closeTime = (Date)vipInfo.get("close_time");
+                if(now>closeTime.getTime()){
+                    //会员过期
+                    throw new QNLiveException("210010");
+                }
+                //今日入园次数
+                int count = userModuleServer.getUserVisitCount(vipInfo.get("user_id").toString(),reqMap.get("place_id").toString());
+
+                if(count>0){
+                    throw new QNLiveException("210011");
+                }
+
+                param.put("sign",sign);
+                param.put("user_id",vipInfo.get("user_id"));
+                param.put("create_time",new Date());
+                //插入访问记录
+                userModuleServer.addUserVisit(param);
+                result = new HashMap<>();
+                nickName = vipInfo.get("nick_name")+"";
+                result.put("nick_name",nickName);
+            }
+        }else{
+            throw new QNLiveException("210007");
+        }
+        return result;
     }
 
 
@@ -307,8 +353,8 @@ public class UserServerImpl extends AbstractQNLiveServer {
             if (MiscUtils.isEmpty(headimgurl)) {
                 reqMap.put("avatar_address", MiscUtils.getConfigByKey("default_avatar_address"));// TODO
             } else {
-                String transferAvatarAddress = qiNiuFetchURL(headimgurl);
-                reqMap.put("avatar_address", transferAvatarAddress);
+                //String transferAvatarAddress = qiNiuFetchURL(headimgurl);
+                reqMap.put("avatar_address", headimgurl);
             }
 
             if (MiscUtils.isEmpty(nickname)) {
@@ -365,99 +411,71 @@ public class UserServerImpl extends AbstractQNLiveServer {
         insertMap.put("user_id", userId);
 
         String billType = reqMap.get("bill_type").toString();
-        String payGoodName = null;
-        Integer totalFee = 0;
-        if ("0".equals(billType)) {
-            //1.检测课程是否存在，课程不存在则给出提示（ 课程不存在，120009）
 
+        Map<String,Object> ticket = userModuleServer.getTicketPrice();
 
-        } else {// 加盟
-            // 获取系统当前加盟费
-            List<String> paramters = new ArrayList<>();
-        }
+        String payGoodName = ticket.get("ticket_name").toString();
+
+        Integer totalFee = Integer.parseInt(String.valueOf(ticket.get("ticket_price")));
+
 
         //3.插入t_trade_bill表 交易信息表
         insertMap.put("profit_type",billType);
         insertMap.put("status", 0);
+        insertMap.put("amount", totalFee);
+        insertMap.put("payment", totalFee);
         insertMap.put("create_time", new Date());
-        insertMap.put("update_time", new Date());
+        insertMap.put("remark", payGoodName);
 
         userModuleServer.insertTradeBill(insertMap);
-        Map<String, Object> query = new HashMap<String, Object>();
+        Map<String, Object> query = new HashMap<>();
         query.put(Constants.CACHED_KEY_ACCESS_TOKEN_FIELD, reqEntity.getAccessToken());
         String key = MiscUtils.getKeyOfCachedData(Constants.CACHED_KEY_ACCESS_TOKEN, query);
 
         //4.调用微信生成预付单接口
         String terminalIp = reqMap.get("remote_ip_address").toString();
         String outTradeNo = tradeId;
-        String platform = (String) reqMap.get("platform");
         String openid = null;
+        String attach = "{profit_type:" + billType + "}";
 
-        boolean isWeb = false;
-        if (platform == null || platform.equals("0")) {
-            Map<String, String> userMap = jedisUtils.getJedis().hgetAll(key);
-            openid = userMap.get("web_openid");
-            if (MiscUtils.isEmpty(openid)) {
-                openid = "ovwtFwDW1gPQ4UH2E0Gff33V3fp0";
-            }
-            isWeb = true;
-        }
+        //Map<String, String> payResultMap = TenPayUtils.sendPrePay(payGoodName, totalFee, terminalIp, outTradeNo, openid, null,attach);
 
-        //payGoodName = new String(payGoodName.getBytes("UTF-8"));
-        //TODO tickitName
-
-        Map<String, String> payResultMap = TenPayUtils.sendPrePay(payGoodName, totalFee, terminalIp, outTradeNo, openid, platform);
+        Map<String, String> payResultMap = new HashMap<>();
+        payResultMap.put("prepay_id",System.currentTimeMillis()+"");
+        payResultMap.put("random_char","random_char");
 
         //5.处理生成微信预付单接口
-        if (payResultMap.get("return_code").equals("FAIL")) {
+        /*if (payResultMap.get("return_code").equals("FAIL")) {
             //更新交易表
             Map<String, Object> failUpdateMap = new HashMap<>();
             failUpdateMap.put("status", "3");
             failUpdateMap.put("close_reason", "生成微信预付单失败 " + payResultMap.get("return_msg") + payResultMap.get("err_code_des"));
             failUpdateMap.put("trade_id", tradeId);
             userModuleServer.closeTradeBill(failUpdateMap);
-            throw new QNLiveException("120015");
-        } else {
+            throw new QNLiveException("120015",payResultMap.get("err_code_des")+":"+payResultMap.get("return_msg"));
+        } else {*/
             //成功，则需要插入支付表
             Map<String, Object> insertPayMap = new HashMap<>();
             insertPayMap.put("payment_id", MiscUtils.getUUId());
             insertPayMap.put("trade_id", tradeId);
             insertPayMap.put("pre_pay_no", payResultMap.get("prepay_id"));
             insertPayMap.put("create_time", new Date());
-//			insertPayMap.put("update_time",new Date());
-
+            insertPayMap.put("payment", totalFee);
             userModuleServer.insertPaymentBill(insertPayMap);
+
             //返回相关参数给前端.
             SortedMap<String, String> resultMap = new TreeMap<>();
-            if (isWeb) {
-                resultMap.put("appId", MiscUtils.getConfigByKey("appid"));
-                resultMap.put("package", "prepay_id=" + payResultMap.get("prepay_id"));
-            } else {
-                resultMap.put("prepayId", payResultMap.get("prepay_id"));
-                resultMap.put("package", "Sign=WXPay");
-            }
+            resultMap.put("appId", MiscUtils.getConfigByKey("appid"));
+            resultMap.put("package", "prepay_id=" + payResultMap.get("prepay_id"));
             resultMap.put("nonceStr", payResultMap.get("random_char"));
             resultMap.put("signType", "MD5");
             resultMap.put("timeStamp", System.currentTimeMillis() / 1000 + "");
 
-            String paySign = null;
-            if (isWeb) {
-                paySign = TenPayUtils.getSign(resultMap, platform);
-            } else {
-                SortedMap<String, String> signMap = new TreeMap<>();
-                signMap.put("appid", MiscUtils.getConfigByKey("app_app_id"));
-                signMap.put("partnerid", MiscUtils.getConfigByKey("weixin_app_pay_mch_id"));
-                signMap.put("prepayid", resultMap.get("prepayId"));
-                signMap.put("package", resultMap.get("package"));
-                signMap.put("noncestr", resultMap.get("nonceStr"));
-                signMap.put("timestamp", resultMap.get("timeStamp"));
-                paySign = TenPayUtils.getSign(signMap, platform);
-            }
-
+            String paySign = TenPayUtils.getSign(resultMap,null);
             resultMap.put("paySign", paySign);
 
             return resultMap;
-        }
+        //}
     }
 
     /**
@@ -475,16 +493,19 @@ public class UserServerImpl extends AbstractQNLiveServer {
         SortedMap<String, String> requestMapData = (SortedMap<String, String>) reqEntity.getParam();
         String tradeId = requestMapData.get("out_trade_no");
 
+        //获得支付类型
+        JSONObject attachJsonObj = JSONObject.parseObject(requestMapData.get("attach"));
+        String profitType = attachJsonObj.getString("profit_type");
+
         // 检查该订单是否已处理
         Map<String, Object> billMap = userModuleServer.findTradebillByTradeId(tradeId);
         if (billMap == null) {
             logger.debug("====> 系统找不到该流水号：: " + tradeId);
             return TenPayConstant.FAIL;
-        }
-//		if (billMap != null && billMap.get("status").equals("2")) {
-//			logger.debug("====>　已经处理完成, 不需要继续。流水号是: " + tradeId);
-//			return TenPayConstant.SUCCESS;
-//		}
+        }else if (billMap.get("status").equals("2")) {
+			logger.debug("====>　已经处理完成, 不需要继续。流水号是: " + tradeId);
+			return TenPayConstant.SUCCESS;
+		}
 
         if (!TenPayUtils.isValidSign(requestMapData)) {// MD5签名成功
             logger.debug(" ===> 微信notify Md5 验签成功 <=== ");
@@ -498,53 +519,22 @@ public class UserServerImpl extends AbstractQNLiveServer {
                 updateMap.put("payment", requestMapData.get("total_fee"));
                 updateMap.put("trade_no", requestMapData.get("transaction_id"));
                 updateMap.put("update_time", now);
-                userModuleServer.updatePaymentBill(updateMap);
-
                 // 更新交易信息状态
                 userModuleServer.updateTradeBill(updateMap);
 
                 String userId = billMap.get("user_id").toString();
-                String profitType = billMap.get("profit_type").toString();
+
+                //购买年卡门票
                 if ("0".equals(profitType)) {
                     // 购买课程交易
-                    String shopId = billMap.get("shop_id").toString();
-                    Map<String, Object> shopMap = userModuleServer.findShopInfo(shopId);
-                    String courseId = billMap.get("course_id").toString();
-                    Map<String, Object> courseMap = userModuleServer.findCourseByCourseId(courseId);
-                    Map<String, Object> shopStatisticsMap = userModuleServer.findShopStatisticsByUserId(shopMap.get("user_id").toString());
-
-                    Map<String, Object> insertMap = new HashMap<>();
-                    // 更新店铺课程表的销售数量
-                    insertMap.put("shop_id", shopId);
-                    insertMap.put("course_id", courseId);
-                    insertMap.put("sale_num", 1);
-                    // 新增店铺客户表
-                    insertMap.clear();
-                    insertMap.put("user_id", userId);
-                    insertMap.put("shop_id", shopId);
-                    insertMap.put("cost_money", requestMapData.get("total_fee"));
-                    boolean isNewCustomer = false;
-
-
-                    // 更新分销者店铺统计表
-                    insertMap.clear();
-                    insertMap.put("shop_id", shopId);
-                    insertMap.put("user_id", shopStatisticsMap.get("user_id"));
-                    insertMap.put("update_time", now);
-                    if (isNewCustomer) {
-                        insertMap.put("customer_num_total", 1);
-                    }
-                    insertMap.put("sale_money_total", courseMap.get("course_price"));
-                    insertMap.put("sale_num_total", 1);
-                    Long profit = (Long) courseMap.get("distributer_distribute_income");
-                    insertMap.put("sale_income_total", profit);
-                    insertMap.put("customer_offer", profit);
-                    insertMap.put("balance", profit);
-                    insertMap.put("course_num", 1);
-
+                    Map<String,Object> vipInfo = new HashMap<>();
+                    vipInfo.put("user_id",userId);
+                    vipInfo.put("create_time",now);
+                    vipInfo.put("close_time",MiscUtils.getYearLater(now));
+                    userModuleServer.insertVipUser(vipInfo);
 
                     // 生成分销者收益通知
-                    insertMap.clear();
+                    /*insertMap.clear();
                     insertMap.put("inform_id", MiscUtils.getUUId());
                     insertMap.put("inform_type", "1");
                     Long income = Long.parseLong(courseMap.get("distributer_distribute_income").toString());
@@ -552,8 +542,7 @@ public class UserServerImpl extends AbstractQNLiveServer {
                     insertMap.put("course_name", courseMap.get("course_name"));
                     insertMap.put("user_id", shopStatisticsMap.get("user_id"));
                     insertMap.put("balance", Long.parseLong(courseMap.get("balance").toString()) + income);
-                    Map<String, Object> userMap = userModuleServer.findUserInfoByUserId(userId);
-                    userModuleServer.insertPaymentBill(insertMap);
+                    userModuleServer.insertPaymentBill(insertMap);*/
                 }
             } else {
                 logger.debug("==> 微信支付失败 ,流水 ：" + tradeId);
