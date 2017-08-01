@@ -1,4 +1,5 @@
 
+package qingning.common.util;
 
 
 import java.net.URLDecoder;
