@@ -1,5 +1,7 @@
 package qingning.db.common.mybatis.persistence;
 
+import org.apache.ibatis.annotations.Param;
+
 import java.util.Map;
 
 public interface UserMapper {
@@ -8,4 +10,16 @@ public interface UserMapper {
     Map<String,Object> findByUserId(String user_id);
     
 	Map<String,Object> findByPhone(String phone);
+
+    int insertVipUser(Map<String, Object> userInfo);
+
+	Map<String,Object> selectVipUserById(String user_id);
+
+	int updateVipUser(Map<String, Object> userInfo);
+
+    Map<String,Object> selectVipUserBySign(String sign);
+
+    int insertVisit(Map<String, Object> param);
+
+    int selectUserVisitCount(@Param("user_id") String user_id, @Param("shop_id") String shop_id);
 }

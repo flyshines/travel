@@ -2,12 +2,9 @@
 package qingning.user.db.server.imp;
 
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 
 import org.springframework.transaction.annotation.Transactional;
-import qingning.common.entity.QNLiveException;
 import qingning.common.util.Constants;
 import qingning.common.util.MiscUtils;
 import qingning.db.common.mybatis.pageinterceptor.domain.PageBounds;
@@ -200,6 +197,7 @@ public class UserModuleServerImpl implements IUserModuleServer {
 
     @Override
     public int updateTradeBill(Map<String, Object> updateMap) {
+        paymentBillMapper.updatePaymentBill(updateMap);
         return tradeBillMapper.updateTradeBill(updateMap);
     }
 
@@ -250,6 +248,40 @@ public class UserModuleServerImpl implements IUserModuleServer {
         res.put("total_count",result.getTotal());
         res.put("total_page",result.getPaginator().getTotalPages());
         return res;
+    }
+
+    @Override
+    public Map<String,Object> getTicketPrice() {
+        return ticketMapper.selectTicketPrice();
+    }
+
+    @Override
+    public int insertVipUser(Map<String, Object> vipInfo) {
+        Map<String,Object> userInfo = userMapper.selectVipUserById(vipInfo.get("user_id").toString());
+        if(userInfo!=null){
+            Date old = (Date)userInfo.get("close_time");
+            userInfo.put("close_time",MiscUtils.getYearLater(old));
+            userInfo.remove("create_time");
+            return userMapper.updateVipUser(userInfo);
+        }else{
+            vipInfo.put("sign",MiscUtils.getOrderId());
+            return userMapper.insertVipUser(vipInfo);
+        }
+    }
+
+    @Override
+    public int addUserVisit(Map<String, Object> param) {
+        return userMapper.insertVisit(param);
+    }
+
+    @Override
+    public Map<String, Object> getVipUserInfo(String sign) {
+        return userMapper.selectVipUserBySign(sign);
+    }
+
+    @Override
+    public int getUserVisitCount(String user_id, String shop_id) {
+       return userMapper.selectUserVisitCount(user_id,shop_id);
     }
 
 }

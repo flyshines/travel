@@ -6,8 +6,6 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import qingning.common.entity.QNLiveException;
- 
-import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
@@ -512,36 +510,6 @@ public final class MiscUtils {
         }
         return value;
     }
- 
- 
-    /**
-     * 转换课程状态
-     * @param currentTime
-     * @param courseInfoMap
-     */
-    public static void courseTranferState(long currentTime, Map<String, String> courseInfoMap) {
-        //如果课程状不为结束，则判断其开始时间是否大于当前时间，如果大于当前时间，则修改其状态为直播中
-        if(! courseInfoMap.get("status").equals("2")&& !courseInfoMap.get("status").equals("5")){
-            long courseStartTime = Long.parseLong(courseInfoMap.get("start_time"));
-            if(currentTime > courseStartTime){
-                courseInfoMap.put("status", "4");
-            }
-        }
-    }
-
-    /**
-     * 转换课程状态
-     * @param currentTime
-     * @param courseInfoMap
-     */
-    public static void courseTranferState(long currentTime,Map<String, Object> courseInfoMap,Long start_time) {
-        //如果课程状不为结束，则判断其开始时间是否大于当前时间，如果大于当前时间，则修改其状态为直播中
-        if(! courseInfoMap.get("status").equals("2")&& !courseInfoMap.get("status").equals("5")){
-            if(currentTime > start_time){
-                courseInfoMap.put("status", "4");
-            }
-        }
-    }
 
  
     public static Date getEndTimeOfToday() {
@@ -564,24 +532,7 @@ public final class MiscUtils {
         Date end = calendar.getTime();
         return end;
     }
- 
-    public static String getIpAddr(HttpServletRequest request){
-        String ip = request.getHeader ("X-Real-IP");
-        if (!org.apache.commons.lang.StringUtils.isBlank(ip) && !"unknown".equalsIgnoreCase (ip)) { return ip; }
-        ip = request.getHeader ("X-Forwarded-For");
-        if (!org.apache.commons.lang.StringUtils.isBlank(ip) && !"unknown".equalsIgnoreCase (ip)) {
-            // 多次反向代理后会有多个IP值，第一个为真实IP。
-            int index = ip.indexOf (',');
-            if (index != -1) {
-                return ip.substring (0, index);
-            } else {
-                return ip;
-            }
-        } else {
-            return request.getRemoteAddr ();
-        }
-    }
- 
+
     /**
      * 从inputstream 取数据。
      * @param is
@@ -698,7 +649,7 @@ public final class MiscUtils {
         cal.set(Calendar.MILLISECOND,0);
         return cal.getTimeInMillis();
     }
-    
+
     //0:公开课程 1:加密课程 2:收费课程
     public static String convertCourseTypeToContent(String course_type) {
         if(course_type.equals("0")){
@@ -787,24 +738,18 @@ public final class MiscUtils {
 	    matcher.appendTail(sb);
 	    return sb.toString();  
 	}
-	
-	public static boolean isTheSameDate(Date date1, Date date2){		
-		boolean result = false;
-		if(date1 != null && date2 != null){
-			Calendar cal1 = Calendar.getInstance();			
-			Calendar cal2 = Calendar.getInstance();
-			if(cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && 
-					cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH) &&
-					cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH)){
-				result = true;
-			}
-			
-		}
-		return result;
-	}
+    public static Date getYearLater(Date now){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.add(Calendar.YEAR, 1);
+        return calendar.getTime();
+    }
 
-    private static String CONFIG_PROPERTY_PATH="classpath:application.properties";//共有的配置文件路径
-
+    public static String getOrderId(){
+        String id = UUID.randomUUID().toString().replace("-", "");
+        String date = parseDateToFotmatString(new Date(),"yyyyMMddHHmm");
+        return date+id;
+    }
 
     public static String getConfigByKey(String key) {
         String value="";
@@ -822,5 +767,9 @@ public final class MiscUtils {
 
         return value;
     }
+    public static void main(String[] args) {
+            System.out.print(System.currentTimeMillis());
+    }
 }
+
 

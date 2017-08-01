@@ -55,4 +55,7 @@
 	<select id="selectByPrimaryKey" parameterType="hashmap" resultType="hashmap">
 		select * from t_ticket where ticket_id = #{key}
 	</select>
+	<select id="selectTicketPrice"  resultType="hashmap">
+		select ticket_price,ticket_name from t_ticket where ticket_id = 1
+	</select>
 </mapper>

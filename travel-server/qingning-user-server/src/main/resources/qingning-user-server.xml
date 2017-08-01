@@ -44,20 +44,33 @@
             <function name="shopList">
                 <auth>
                     <accessToken require="Y"/>
-                    <param name="page_num" type="long" require="N"/>
-                    <param name="page_size" type="long" require="N"/>
                 </auth>
                 <inputs>
+                    <param name="page_num" type="long" require="N"/>
+                    <param name="page_size" type="long" require="N"/>
                 </inputs>
                 <outputs>
                     <param name="total_count" type="string"/>
                     <param name="total_page" type="string"/>
                     <param name="list" type="list">
-                        <param name="place_id" default="0" type="string"/>
-                        <param name="place_name" type="long"/>
+                        <param name="place_id" default="0" fieldname="shop_id" type="string"/>
+                        <param name="place_name" fieldname="shop_name" type="string"/>
                     </param>
                     <param name="total_count" type="long" />
                     <param name="total_page" type="long" />
+                </outputs>
+            </function>
+            <!--商户扫码-->
+            <function name="scanCode">
+                <auth>
+                    <accessToken require="Y"/>
+                </auth>
+                <inputs>
+                    <param name="code" type="string" require="Y,000100"/>
+                    <param name="place_id" type="string" require="Y,000100"/>
+                </inputs>
+                <outputs>
+
                 </outputs>
             </function>
 
@@ -205,11 +218,8 @@
                     <timesLimit millisecond="100"/>
                 </auth>
                 <inputs>
-                    <param name="profit_type" type="string" require="Y,000100" format="^[0-1]$,120011"/>
-                    <param name="course_id" type="string"/>
-                    <param name="invite_code" type="string"/>
-                    <param name="shop_id" type="string" require="Y,000100"/>
-                    <param name="platform" type="string"/>
+                    <param name="bill_type" type="string" require="Y,000100" format="^[0-1]$,120011"/>
+                    <param name="ticket_id" type="string"/>
                 </inputs>
                 <outputs>
                     <param name="appId" type="string"/>

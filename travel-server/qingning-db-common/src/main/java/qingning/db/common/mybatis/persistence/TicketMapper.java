@@ -17,4 +17,9 @@ public interface TicketMapper {
 	 * @return
 	 */
 	Map<String, Object> selectByPrimaryKey(String key);
+
+	/**查询票价
+	 * @return
+	 */
+	Map<String,Object> selectTicketPrice();
 }
