@@ -16,10 +16,16 @@
 				shop_name = #{shop_name},
 			</if>
 			<if test="shop_remark != null">
-				shop_remark = #{shop_remark},
+                shop_remark = #{shop_remark},
 			</if>
-			<if test="avatar_address != null">
-				avatar_address = #{avatar_address},
+			<if test="update_time != null">
+                update_time = #{update_time},
+			</if>
+			<if test="status != null">
+                status = #{status},
+			</if>
+			<if test="shop_image != null">
+                shop_image = #{shop_image},
 			</if>
 		</set>
 		WHERE shop_id = #{shop_id}
@@ -67,14 +73,26 @@
       <if test="shop_name != null" >
         shop_name,
       </if>
-      <if test="avatar_address != null" >
-        avatar_address,
+      <if test="shop_image != null" >
+          shop_image,
       </if>
       <if test="shop_remark != null" >
         shop_remark,
       </if>
       <if test="shopkeeper_card_address != null" >
         shopkeeper_card_address,
+      </if>
+      <if test="ticket_id != null" >
+          ticket_id,
+      </if>
+      <if test="status != null" >
+          status,
+      </if>
+      <if test="create_time != null" >
+          create_time,
+      </if>
+      <if test="create_user != null" >
+          create_user,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -90,14 +108,26 @@
       <if test="shop_name != null" >
         #{shop_name},
       </if>
-      <if test="avatar_address != null" >
-        #{avatar_address},
+      <if test="shop_image != null" >
+        #{shop_image},
       </if>
       <if test="shop_remark != null" >
         #{shop_remark},
       </if>
       <if test="shopkeeper_card_address != null" >
         #{shopkeeper_card_address},
+      </if>
+      <if test="ticket_id != null" >
+        #{ticket_id},
+      </if>
+      <if test="status != null" >
+        #{status},
+      </if>
+      <if test="create_time != null" >
+        #{create_time},
+      </if>
+      <if test="create_user != null" >
+        #{create_user},
       </if>
     </trim>
   </insert>

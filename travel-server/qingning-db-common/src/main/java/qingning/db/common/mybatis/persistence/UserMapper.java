@@ -22,4 +22,12 @@ public interface UserMapper {
     int insertVisit(Map<String, Object> param);
 
     int selectUserVisitCount(@Param("user_id") String user_id, @Param("shop_id") String shop_id);
+
+    /**后台登录
+     * @param reqMap
+     * @return
+     */
+    Map<String,Object> selectAdminUserByMobile(Map<String, Object> reqMap);
+
+    void updateAdminUserByAllMap(Map<String, Object> adminUserMap);
 }

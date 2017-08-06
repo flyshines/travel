@@ -100,7 +100,7 @@ public class UserController extends AbstractController{
 	@RequestMapping(value = "/entering", method = RequestMethod.POST)
 	public
 	@ResponseBody
-	ResponseEntity shopList(
+	ResponseEntity entering(
 			HttpEntity<Object> entity,
 			@RequestHeader("access_token") String accessToken,
 			@RequestHeader("version") String version
@@ -184,32 +184,6 @@ public class UserController extends AbstractController{
 		return this.process(requestEntity, serviceManger, message);
 	}
 
-	/**
-	 * 用户登录
-	 *
-	 * @param entity
-	 * @param version
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public
-	@ResponseBody
-	ResponseEntity userLogin(
-			HttpServletRequest httpRequest,
-			HttpEntity<Object> entity,
-			@RequestHeader("version") String version) throws Exception {
-		String ip = ServerUtils.getIpAddr(httpRequest);
-		RequestEntity requestEntity = this.createRequestEntity("UserServer", "userLogin", null, version);
-		requestEntity.setIp(ip);
-		requestEntity.setParam(entity.getBody());
-		ResponseEntity responseEntity = this.process(requestEntity, serviceManger, message);
-
-		//根据相关条件将server_url列表信息返回
-		Map<String, Object> resultMap = (Map<String, Object>) responseEntity.getReturnData();
-		responseEntity.setReturnData(resultMap);
-		return responseEntity;
-	}
 
 	/**
 	 * 获取系统配置信息

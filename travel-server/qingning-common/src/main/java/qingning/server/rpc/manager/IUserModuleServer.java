@@ -175,4 +175,23 @@ public interface IUserModuleServer {
 	 * @return
 	 */
 	int getUserVisitCount(String user_id, String shop_id);
+	/**
+	 * 后台_根据手机号码查询后台登录帐号
+	 * @param reqMap
+	 * @return
+	 */
+	Map<String, Object> getAdminUserByMobile(Map<String, Object> reqMap);
+	/**
+	 * 后台_更新后台账户所有字段
+	 */
+	void updateAdminUserByAllMap(Map<String, Object> adminUserMap);
+
+	/**新增景区
+	 * @param param
+	 */
+	int addPlace(Map<String, Object> param);
+	/**编辑景区
+	 * @param param
+	 */
+	int updatePlace(Map<String, Object> param);
 }

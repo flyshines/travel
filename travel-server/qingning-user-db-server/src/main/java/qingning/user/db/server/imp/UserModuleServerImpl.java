@@ -283,5 +283,28 @@ public class UserModuleServerImpl implements IUserModuleServer {
     public int getUserVisitCount(String user_id, String shop_id) {
        return userMapper.selectUserVisitCount(user_id,shop_id);
     }
+    /**
+     * 后台_根据手机号码查询后台登录帐号
+     */
+    @Override
+    public Map<String, Object> getAdminUserByMobile(Map<String, Object> reqMap) {
+        return userMapper.selectAdminUserByMobile(reqMap);
+    }
+    /**
+     * 后台_更新后台账户所有字段
+     */
+    @Override
+    public void updateAdminUserByAllMap(Map<String, Object> adminUserMap) {
+        userMapper.updateAdminUserByAllMap(adminUserMap);
+    }
 
+    @Override
+    public int addPlace(Map<String, Object> param) {
+        return shopMapper.insertShop(param);
+    }
+
+    @Override
+    public int updatePlace(Map<String, Object> param) {
+        return shopMapper.updateShopInfo(param);
+    }
 }

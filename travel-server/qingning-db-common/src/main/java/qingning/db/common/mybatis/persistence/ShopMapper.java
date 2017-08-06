@@ -34,6 +34,4 @@ public interface ShopMapper {
 	 * @return
 	 */
 	int updateShopInfo(Map<String, Object> reqMap);
-
-
 }

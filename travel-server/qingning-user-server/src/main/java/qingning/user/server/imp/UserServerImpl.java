@@ -7,6 +7,7 @@ import com.qiniu.storage.Configuration;
 import com.qiniu.storage.model.FetchRet;
 import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -161,6 +162,183 @@ public class UserServerImpl extends AbstractQNLiveServer {
         }
         return result;
     }
+    /**
+     * 后台登录
+     *
+     * @param reqEntity
+     * @return
+     * @throws Exception
+     */
+    @FunctionName("sysLogin")
+    public Map<String, Object> sysLogin(RequestEntity reqEntity) throws Exception {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        /*
+         * 获取请求参数
+         */
+        Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
+        Jedis jedis = jedisUtils.getJedis();
+
+        String password = ((String) reqMap.get("password")).toUpperCase();
+
+        /*
+         * 根据号码查询数据库
+         */
+        Map<String, Object> adminUserMap = userModuleServer.getAdminUserByMobile(reqMap);
+        if (adminUserMap == null) {
+            logger.info("后台登录>>>>手机号没有关联账户");
+            throw new QNLiveException("000005");
+        }
+       // 44310B3143C5C0411AB3550B5A72CB38
+        //260EFC08DD372845291C4B8F96BFD26D
+        /*
+         * 验证密码:
+         * 	前端传递的MD5加密字符串后追加appName，在进行MD5加密
+         */
+        String md5Pw = MD5Util.getMD5(password + "_" + "@travel");
+        if (!md5Pw.equals(adminUserMap.get("password").toString())) {
+            logger.info("后台登录>>>>登录密码错误");
+            throw new QNLiveException("120001");
+        }
+
+        /*
+         * 更新后台登录用户统计数据
+         */
+        Date now = new Date();
+        adminUserMap.put("last_login_time", now);
+        adminUserMap.put("last_login_ip", "");
+        adminUserMap.put("login_num", 1);    //用于sql执行+1
+
+        /*
+         * 判断是否需要生成token
+         */
+        String userId = String.valueOf(adminUserMap.get("user_id"));
+        String accessToken = (String) adminUserMap.get("token");
+        Map<String, Object> map = new HashMap<String, Object>();
+        String accessTokenKey = null;
+        if (!StringUtils.isBlank(accessToken)) {    //数据库中的token不为空
+            map.put("access_token", accessToken);
+            accessTokenKey = MiscUtils.getKeyOfCachedData(Constants.CACHED_KEY_ACCESS_TOKEN,
+                    map);
+            if (!jedis.exists(accessTokenKey)) {    //不在redis中
+            	/*
+            	 * 生成新的accessToken
+            	 */
+                accessToken = AccessTokenUtil.generateAccessToken(userId, String.valueOf(now.getTime()));
+                map.put("access_token", accessToken);
+                accessTokenKey = MiscUtils.getKeyOfCachedData(Constants.CACHED_KEY_ACCESS_TOKEN,
+                        map);
+            }
+        } else {
+        	/*
+        	 * 生成新的accessToken
+        	 */
+            accessToken = AccessTokenUtil.generateAccessToken(userId, String.valueOf(now.getTime()));
+            map.put("access_token", accessToken);
+            accessTokenKey = MiscUtils.getKeyOfCachedData(Constants.CACHED_KEY_ACCESS_TOKEN,
+                    map);
+        }
+
+        adminUserMap.put("token", accessToken);
+        userModuleServer.updateAdminUserByAllMap(adminUserMap);
+
+        /*
+         * 将token写入缓存
+         */
+        Map<String, String> tokenCacheMap = new HashMap<>();
+        MiscUtils.converObjectMapToStringMap(adminUserMap, tokenCacheMap);
+
+        if (!tokenCacheMap.isEmpty()) {
+            jedis.hmset(accessTokenKey, tokenCacheMap);
+        }
+        jedis.expire(accessTokenKey, Integer.parseInt(MiscUtils.getConfigByKey("access_token_expired_time")));
+
+        /*
+         * 返回数据
+         */
+        adminUserMap.put("access_token", accessToken);
+        adminUserMap.put("version", "1.0.0");    //暂时写死
+        resultMap.putAll(adminUserMap);
+        return resultMap;
+    }
+    /**
+     * 后台-新增景区
+     *
+     * @param reqEntity
+     * @return
+     * @throws Exception
+     */
+    @FunctionName("addPlace")
+    public Map<String, Object> addPlace(RequestEntity reqEntity) throws Exception {
+        Map<String, Object> param = (Map<String, Object>) reqEntity.getParam();
+        String userId = AccessTokenUtil.getUserIdFromAccessToken(reqEntity.getAccessToken());
+        param.put("create_user",userId);
+        param.put("create_time",new Date());
+        param.put("shop_id",MiscUtils.getUUId());
+        param.put("ticket_id","1");
+        param.put("shop_remark",param.get("remark"));
+        param.put("shop_name",param.get("place_name"));
+        if(param.get("place_image")==null){
+            param.put("shop_image","http://ou8rry0e1.bkt.clouddn.com/banner.2446c16.png");
+        }else{
+            param.put("shop_image",param.get("place_image"));
+        }
+        userModuleServer.addPlace(param);
+
+        return null;
+    }
+    /**
+     * 后台-编辑景区
+     *
+     * @param reqEntity
+     * @return
+     * @throws Exception
+     */
+    @FunctionName("editPlace")
+    public Map<String, Object> editPlace(RequestEntity reqEntity) throws Exception {
+        Map<String, Object> param = (Map<String, Object>) reqEntity.getParam();
+        param.put("update_time",new Date());
+        param.put("shop_id",param.get("place_id"));
+
+        if(param.get("remark")==null&&param.get("place_name")==null&&param.get("place_image")==null&&param.get("status")==null){
+            return null;
+        }
+
+        if(param.get("remark")!=null){
+            param.put("shop_remark",param.get("remark"));
+        }
+        if(param.get("place_name")!=null){
+            param.put("shop_name",param.get("place_name"));
+        }
+        if(param.get("place_image")!=null){
+            param.put("shop_image",param.get("place_image"));
+        }
+        if(param.get("status")!=null){
+            param.put("status",param.get("status"));
+        }
+
+        userModuleServer.updatePlace(param);
+
+        return null;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*=====================================其他代码=========================================*/
 
 
 

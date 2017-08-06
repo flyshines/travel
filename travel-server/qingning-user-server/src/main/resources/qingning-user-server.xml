@@ -74,6 +74,76 @@
                 </outputs>
             </function>
 
+            <!--后台-登录-->
+            <function name="sysLogin">
+                <auth>
+                    <accessToken require="N"/>
+                </auth>
+                <inputs>
+                    <param name="mobile" type="string" require="Y,000100" />
+                    <param name="password" type="string" require="Y,000100" />
+                </inputs>
+                <outputs>
+                    <param name="access_token" type="string"/>
+                    <param name="username" type="string"/>
+                    <param name="avatar" type="string"/>
+                    <param name="email" type="string"/>
+                    <param name="mobile" type="string"/>
+                    <param name="login_num" type="string"/>
+                </outputs>
+            </function>
+
+            <!--后台-新增景区-->
+            <function name="addPlace">
+                <auth>
+                    <accessToken require="N"/>
+                </auth>
+                <inputs>
+                    <param name="place_name" type="string" require="Y,000100" />
+                    <param name="remark" type="string" require="Y,000100" />
+                    <param name="place_image" type="string" require="N" />
+                    <param name="status" type="string" require="N" format="0|1,000004" />
+                </inputs>
+                <outputs>
+                </outputs>
+            </function>
+
+            <!--后台-编辑景区-->
+            <function name="editPlace">
+                <auth>
+                    <accessToken require="N"/>
+                </auth>
+                <inputs>
+                    <param name="place_name" type="string" require="N" />
+                    <param name="remark" type="string" require="N" />
+                    <param name="place_image" type="string" require="N" />
+                    <param name="status" type="string" require="N" format="0|1,000004" />
+                </inputs>
+                <outputs>
+                </outputs>
+            </function>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!--======================================漂亮的分界线=======================================-->
+
             <function name="qiNiuUploadToken">
                 <auth>
                     <accessToken require="Y"/>
