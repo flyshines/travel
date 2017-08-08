@@ -89,6 +89,29 @@ public class AdminController extends AbstractController{
 		responseEntity.setReturnData(resultMap);
 		return responseEntity;
 	}
+	/**
+	 * editTicket
+	 *
+	 * @param version     版本号
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/ticket/edit", method = RequestMethod.POST)
+	public
+	@ResponseBody
+	ResponseEntity editTicket(
+			HttpEntity<Object> entity,
+			@RequestHeader("access_token") String accessToken,
+			@RequestHeader("version") String version
+	) throws Exception {
+		RequestEntity requestEntity = this.createRequestEntity("UserServer", "editTicket", accessToken, version);
+		Map<String, Object> paramCode = (Map<String, Object>) entity.getBody();
+		requestEntity.setParam(paramCode);
+		ResponseEntity responseEntity = this.process(requestEntity, serviceManger, message);
+		Map<String, Object> resultMap = (Map<String, Object>) responseEntity.getReturnData();
+		responseEntity.setReturnData(resultMap);
+		return responseEntity;
+	}
 
 
 

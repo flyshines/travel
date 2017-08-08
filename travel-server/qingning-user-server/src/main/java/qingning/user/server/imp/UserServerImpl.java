@@ -19,6 +19,8 @@ import qingning.server.annotation.FunctionName;
 import qingning.server.rpc.manager.IUserModuleServer;
 import qingning.user.server.other.*;
 import redis.clients.jedis.Jedis;
+
+import java.math.BigDecimal;
 import java.util.*;
 
 public class UserServerImpl extends AbstractQNLiveServer {
@@ -318,6 +320,22 @@ public class UserServerImpl extends AbstractQNLiveServer {
 
         userModuleServer.updatePlace(param);
 
+        return null;
+    }
+   /**
+     * 编辑票价
+     *
+     * @param reqEntity
+     * @return
+     * @throws Exception
+     */
+    @FunctionName("editTicket")
+    public Map<String, Object> editTicket(RequestEntity reqEntity) throws Exception {
+        Map<String, Object> param = (Map<String, Object>) reqEntity.getParam();
+        //double price = Double.valueOf(param.get("price").toString());
+        //long newPrice = new BigDecimal(DoubleUtil.mul(price,100D)).longValue();
+        //param.put("price",newPrice);
+        userModuleServer.updateTicket(param);
         return null;
     }
 

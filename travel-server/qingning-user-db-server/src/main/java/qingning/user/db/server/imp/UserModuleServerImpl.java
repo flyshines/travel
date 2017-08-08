@@ -307,4 +307,9 @@ public class UserModuleServerImpl implements IUserModuleServer {
     public int updatePlace(Map<String, Object> param) {
         return shopMapper.updateShopInfo(param);
     }
+
+    @Override
+    public int updateTicket(Map<String, Object> param) {
+        return ticketMapper.updateByPrimaryKey(param);
+    }
 }

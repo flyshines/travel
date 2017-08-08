@@ -123,6 +123,21 @@
                 </outputs>
             </function>
 
+            <!--后台-编辑景区-->
+            <function name="editTicket">
+                <auth>
+                    <accessToken require="N"/>
+                </auth>
+                <inputs>
+                    <param name="price" type="double" require="Y" />
+                    <param name="year" type="long" require="N" />
+                    <param name="month" type="long" require="N" />
+                    <param name="day" type="long" require="N"/>
+                </inputs>
+                <outputs>
+                </outputs>
+            </function>
+
 
 
 

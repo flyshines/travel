@@ -22,4 +22,10 @@ public interface TicketMapper {
 	 * @return
 	 */
 	Map<String,Object> selectTicketPrice();
+
+	/**更新票价
+	 * @param param
+	 * @return
+	 */
+	int updateByPrimaryKey(Map<String, Object> param);
 }

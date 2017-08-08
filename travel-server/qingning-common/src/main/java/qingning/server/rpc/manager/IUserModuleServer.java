@@ -194,4 +194,10 @@ public interface IUserModuleServer {
 	 * @param param
 	 */
 	int updatePlace(Map<String, Object> param);
+
+	/**更新票价
+	 * @param param
+	 * @return
+	 */
+	int updateTicket(Map<String, Object> param);
 }

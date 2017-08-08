@@ -51,7 +51,9 @@
 			</if>
 		</trim>
 	</insert>
-  
+  	<update id="updateByPrimaryKey" parameterType="hashmap">
+		UPDATE t_ticket SET ticket_price = #{price} WHERE ticket_id = 1
+	</update>
 	<select id="selectByPrimaryKey" parameterType="hashmap" resultType="hashmap">
 		select * from t_ticket where ticket_id = #{key}
 	</select>
