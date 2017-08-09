@@ -247,6 +247,55 @@
     where mobile = #{mobile} and status = 1
     limit 1
   </select>
+  <!-- 统计 -->
+  <select id="selectCountUser" resultType="java.lang.Integer">
+    SELECT
+        count(*)
+    FROM
+        (
+            SELECT
+                count(*)
+            FROM
+                `t_user_visit` t
+            GROUP BY
+                t.user_id
+        ) t
+  </select>
+  <!-- 用户列表 -->
+  <select id="selectUserList" resultType="hashmap" parameterType="hashmap" >
+          SELECT
+    u.user_id,
+    u.avatar_address,
+    u.nick_name,
+    v.close_time,
+    (v.close_time &lt; SYSDATE()) AS is_over,
+    vs.create_date
+    FROM
+    t_user u
+    LEFT JOIN t_user_vip v ON u.user_id = v.user_id
+    JOIN t_user_visit vs ON vs.user_id = u.user_id
+    GROUP BY user_id asc
+  </select>
+  <!-- 收入信息 -->
+  <select id="selectIncomeList" parameterType="hashmap" resultType="hashmap">
+    SELECT
+    t.user_id,u.avatar_address,u.nick_name,t.create_time,v.close_time ,(v.close_time &lt; SYSDATE())as is_over
+    FROM
+    `t_user_visit` t
+    LEFT JOIN t_user u ON u.user_id = t.user_id
+    LEFT JOIN t_user_vip v ON t.user_id = v.user_id
+    where 1=1
+    <if test="keyword != null" >
+      AND u.nick_name like '%${keyword}%'
+    </if>
+    <if test="start_time != null" >
+      AND create_time &gt; #{start_time}
+    </if>
+    <if test="end_time != null" >
+      AND create_time &lt; #{end_time}
+    </if>
+    ORDER BY is_over asc,t.create_time desc
+  </select>
   <!-- 更新后台账户所有字段 -->
   <update id="updateAdminUserByAllMap" parameterType="hashmap">
     update t_admin_user set last_login_time = #{last_login_time}, last_login_ip = #{last_login_ip},

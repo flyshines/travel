@@ -1,6 +1,8 @@
 package qingning.db.common.mybatis.persistence;
 
 import org.apache.ibatis.annotations.Param;
+import qingning.db.common.mybatis.pageinterceptor.domain.PageBounds;
+import qingning.db.common.mybatis.pageinterceptor.domain.PageList;
 
 import java.util.Map;
 
@@ -30,4 +32,20 @@ public interface UserMapper {
     Map<String,Object> selectAdminUserByMobile(Map<String, Object> reqMap);
 
     void updateAdminUserByAllMap(Map<String, Object> adminUserMap);
+
+    /**收入列表
+     * @param param
+     * @param page
+     * @return
+     */
+    PageList<Map<String,Object>> selectIncomeList(Map<String, Object> param, PageBounds page);
+
+    int selectCountUser();
+
+    /**用户列表
+     * @param param
+     * @param page
+     * @return
+     */
+    PageList<Map<String,Object>> selectUserList(Map<String, Object> param, PageBounds page);
 }

@@ -312,4 +312,27 @@ public class UserModuleServerImpl implements IUserModuleServer {
     public int updateTicket(Map<String, Object> param) {
         return ticketMapper.updateByPrimaryKey(param);
     }
+
+    @Override
+    public Map<String, Object> getIncomeList(Map<String, Object> param) {
+        PageBounds page = new PageBounds(Integer.valueOf(param.get("page_num").toString()),Integer.valueOf(param.get("page_size").toString()));
+        PageList<Map<String,Object>> result = userMapper.selectIncomeList(param,page);
+        int count = userMapper.selectCountUser();
+        Map<String,Object> res = new HashMap<>();
+        res.put("user_list",result);
+        res.put("total_count",result.getTotal());
+        res.put("total_page",result.getPaginator().getTotalPages());
+        res.put("user_count",count);
+        return res;
+    }
+    @Override
+    public Map<String, Object> getUserList(Map<String, Object> param) {
+        PageBounds page = new PageBounds(Integer.valueOf(param.get("page_num").toString()),Integer.valueOf(param.get("page_size").toString()));
+        PageList<Map<String,Object>> result = userMapper.selectUserList(param,page);
+        Map<String,Object> res = new HashMap<>();
+        res.put("user_list",result);
+        res.put("total_count",result.getTotal());
+        res.put("total_page",result.getPaginator().getTotalPages());
+        return res;
+    }
 }

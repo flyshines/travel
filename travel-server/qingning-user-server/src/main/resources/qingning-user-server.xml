@@ -96,7 +96,7 @@
             <!--后台-新增景区-->
             <function name="addPlace">
                 <auth>
-                    <accessToken require="N"/>
+                    <accessToken require="Y"/>
                 </auth>
                 <inputs>
                     <param name="place_name" type="string" require="Y,000100" />
@@ -111,7 +111,7 @@
             <!--后台-编辑景区-->
             <function name="editPlace">
                 <auth>
-                    <accessToken require="N"/>
+                    <accessToken require="Y"/>
                 </auth>
                 <inputs>
                     <param name="place_name" type="string" require="N" />
@@ -123,10 +123,10 @@
                 </outputs>
             </function>
 
-            <!--后台-编辑景区-->
+            <!--后台-编辑门票-->
             <function name="editTicket">
                 <auth>
-                    <accessToken require="N"/>
+                    <accessToken require="Y"/>
                 </auth>
                 <inputs>
                     <param name="price" type="double" require="Y" />
@@ -135,6 +135,56 @@
                     <param name="day" type="long" require="N"/>
                 </inputs>
                 <outputs>
+                </outputs>
+            </function>
+            <!--后台-收入列表-->
+            <function name="incomeList">
+                <auth>
+                    <accessToken require="N"/>
+                </auth>
+                <inputs>
+                    <param name="place_id" type="double" require="N" />
+                    <param name="start_time" type="long" require="N" />
+                    <param name="end_time" type="long" require="N" />
+                    <param name="keyword" type="string" require="N"/>
+                </inputs>
+                 <outputs>
+                    <param name="user_list" type="list">
+                        <param name="user_id" type="string"/>
+                        <param name="nick_name" type="string"/>
+                        <param name="avatar_address" type="string"/>
+                        <param name="create_time" type="long"/>
+                        <param name="close_time" type="long"/>
+                        <param name="is_over" type="string"/>
+                    </param>
+                     <param name="user_count" type="long"/>
+                     <param name="total_count" type="long"/>
+                     <param name="total_page" type="long"/>
+                </outputs>
+            </function>
+            <!--后台-用户列表-->
+            <function name="userList">
+                <auth>
+                    <accessToken require="N"/>
+                </auth>
+                <inputs>
+                    <param name="type" type="string" require="N" />
+                    <param name="keyword" type="string" require="N" />
+                </inputs>
+                 <outputs>
+                    <param name="user_list" type="list">
+                        <param name="user_id" type="string"/>
+                        <param name="nick_name" type="string"/>
+                        <param name="avatar_address" type="string"/>
+                        <param name="create_time" type="long"/>
+                        <param name="close_time" type="long"/>
+                        <param name="is_over" type="string"/>
+                        <param name="last_plase_name" type="string"/>
+                        <param name="last_plase_date" type="long"/>
+                    </param>
+                     <param name="user_count" type="long"/>
+                     <param name="total_count" type="long"/>
+                     <param name="total_page" type="long"/>
                 </outputs>
             </function>
 

@@ -339,6 +339,41 @@ public class UserServerImpl extends AbstractQNLiveServer {
         return null;
     }
 
+   /**
+     * 收入列表
+     *
+     * @param reqEntity
+     * @return
+     * @throws Exception
+     */
+    @FunctionName("incomeList")
+    public Map<String, Object> incomeList(RequestEntity reqEntity) throws Exception {
+        Map<String, Object> param = (Map<String, Object>) reqEntity.getParam();
+        if(param.get("start_time")!=null){
+            long start = Long.valueOf(param.get("start_time").toString());
+            param.put("start_time",new Date(start));
+        }
+        if(param.get("end_time")!=null){
+            long end = Long.valueOf(param.get("end_time").toString());
+            param.put("end_time",new Date(end));
+        }
+        Map<String, Object> res = userModuleServer.getIncomeList(param);
+        return res;
+    }
+   /**
+     * 用户列表
+     *
+     * @param reqEntity
+     * @return
+     * @throws Exception
+     */
+    @FunctionName("userList")
+    public Map<String, Object> userList(RequestEntity reqEntity) throws Exception {
+        Map<String, Object> param = (Map<String, Object>) reqEntity.getParam();
+        Map<String, Object> res = userModuleServer.getUserList(param);
+        return res;
+    }
+
 
 
 

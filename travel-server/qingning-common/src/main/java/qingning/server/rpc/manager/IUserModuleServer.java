@@ -200,4 +200,15 @@ public interface IUserModuleServer {
 	 * @return
 	 */
 	int updateTicket(Map<String, Object> param);
+
+	/**收入列表
+	 * @param param
+	 * @return
+	 */
+	Map<String,Object> getIncomeList(Map<String, Object> param);
+	/**用户列表
+	 * @param param
+	 * @return
+	 */
+	Map<String,Object> getUserList(Map<String, Object> param);
 }
