@@ -554,7 +554,7 @@ public class UserServerImpl extends AbstractQNLiveServer {
             String userWeixinAccessToken = getCodeResultJson.getString("access_token");
             JSONObject userJson = WeiXinUtil.getUserInfoByAccessToken(userWeixinAccessToken, openid);
             // 根据得到的相关用户信息注册用户，并且进行登录流程。
-            if (userJson == null || userJson.getInteger("errcode") != null || userJson.getString("unionid") == null) {
+            if (userJson == null || userJson.getInteger("errcode") != null /*|| userJson.getString("unionid") == null*/) {
                 if (userJson.getString("unionid") == null) {
                     resultMap.put("key", "0");
                     return resultMap;
