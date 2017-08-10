@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="qingning.db.common.mybatis.persistence.LoginInfoMapper" >
   <select id="getLoginInfoByLoginIdAndLoginType" resultType="hashmap" parameterType="hashmap" >
-    select * from t_login_info
+    select * from t_user_login
     where
     <if test='login_type != null and login_type == "0"'>
       union_id = #{login_id}
@@ -19,18 +19,18 @@
   </select>
 
   <select id="findLoginInfoByUserId" resultType="hashmap" parameterType="string" >
-    select * from t_login_info where user_id = #{userId}
+    select * from t_user_login where user_id = #{userId}
   </select>
 
   <select id="findLoginInfoByUserIds" resultType="string" parameterType="hashmap" >
-    select web_openid from t_login_info  where web_openid is not null and  user_id in    (
+    select web_openid from t_user_login  where web_openid is not null and  user_id in    (
     <foreach collection="list" item="item" index="index" separator=",">
      #{item}
     </foreach>)
   </select>
 
   <update id="updateUserRole" parameterType="hashmap" >
-    update t_login_info
+    update t_user_login
     <set >
         user_role = CONCAT(user_role,#{add_role,jdbcType=VARCHAR})
     </set>
@@ -38,7 +38,7 @@
   </update>
 
   <insert id="insertLoginInfo" parameterType="hashmap" >
-    insert into t_login_info
+    insert into t_user_login
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="user_id != null" >
         user_id,
@@ -142,7 +142,7 @@
   </insert>
   
   <update id="updateLoginInfo" parameterType="hashmap" >  
-    update t_login_info
+    update t_user_login
     <set >
       <if test="union_id != null" >
         union_id=#{union_id},
