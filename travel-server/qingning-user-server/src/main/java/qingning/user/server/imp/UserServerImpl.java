@@ -842,12 +842,23 @@ public class UserServerImpl extends AbstractQNLiveServer {
         //1.将objectMap转为StringMap
         MiscUtils.converObjectMapToStringMap(loginInfoMap, cacheMap);
         //2.根据相关信息生成access_token
+
+        String userID_AccessToken = Constants.CACHED_KEY_ACCESS_TOKEN_USER+user_id;
+        //已经有Token
+        String oldToken = jedis.get(userID_AccessToken);
+        if(oldToken!=null){
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("access_token", oldToken);
+            String old_access_token = MiscUtils.getKeyOfCachedData(Constants.CACHED_KEY_ACCESS_TOKEN, map);
+            jedis.del(old_access_token);
+        }
         String access_token = AccessTokenUtil.generateAccessToken(user_id, last_login_date);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("access_token", access_token);
         String process_access_token = MiscUtils.getKeyOfCachedData(Constants.CACHED_KEY_ACCESS_TOKEN, map);
         if (!cacheMap.isEmpty()) {
             jedis.hmset(process_access_token, cacheMap);
+            jedis.set(userID_AccessToken,access_token);
         }
         jedis.expire(process_access_token, Integer.parseInt(MiscUtils.getConfigByKey("access_token_expired_time")));
         Map<String, Object> query = new HashMap<String, Object>();

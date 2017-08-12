@@ -65,6 +65,8 @@ public final class Constants {
 
 	public static final String CACHED_KEY_ACCESS_TOKEN_FIELD = "access_token";
 	public static final String CACHED_KEY_ACCESS_TOKEN = "SYS:ACCESSTOKEN:{access_token}";
+	public static final String CACHED_KEY_ACCESS_TOKEN_USER = "SYS:USERTOKEN:";
+
 	public static final String CACHED_KEY_USER_FIELD ="user_id";
 	public static final String CACHED_KEY_USER = "SYS:USER:{user_id}";
 
