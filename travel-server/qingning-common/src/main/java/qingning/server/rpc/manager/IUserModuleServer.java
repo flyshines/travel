@@ -10,7 +10,7 @@ public interface IUserModuleServer {
 
 	Map<String,Object> getLoginInfoByLoginIdAndLoginType(Map<String, Object> reqMap);
 
-	Map<String,String> initializeRegisterUser(Map<String, Object> reqMap);
+	Map<String,String> initializeRegisterUser(Map<String, Object> reqMap, boolean isShop);
 
 
 	Map<String,Object> findLoginInfoByUserId(String user_id);

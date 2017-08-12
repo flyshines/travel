@@ -483,11 +483,23 @@ public class UserServerImpl extends AbstractQNLiveServer {
      * @return
      * @throws Exception
      */
-    @SuppressWarnings("unchecked")
     @FunctionName("weiXinConfiguration")
     public Map<String, String> getWeiXinConfiguration(RequestEntity reqEntity) throws Exception {
         Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
         String JSApiTIcket = WeiXinUtil.getJSApiTIcket(jedisUtils.getJedis());
+        return WeiXinUtil.sign(JSApiTIcket, reqMap.get("url").toString());
+    }
+    /**
+     * 获取微信商户配置信息
+     *
+     * @param reqEntity
+     * @return
+     * @throws Exception
+     */
+    @FunctionName("getWeiXinShopConfiguration")
+    public Map<String, String> getWeiXinShopConfiguration(RequestEntity reqEntity) throws Exception {
+        Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
+        String JSApiTIcket = WeiXinUtil.getJSSHOPTIcket(jedisUtils.getJedis());
         return WeiXinUtil.sign(JSApiTIcket, reqMap.get("url").toString());
     }
 
@@ -524,10 +536,15 @@ public class UserServerImpl extends AbstractQNLiveServer {
     public Map<String, Object> weixinCodeUserLogin(RequestEntity reqEntity) throws Exception {
         Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
         Map<String, Object> resultMap = new HashMap<String, Object>();
-        resultMap.put("key", "1");// 钥匙 用于在controller判断跳转的页面
+        boolean isShop = "1".equals(reqMap.get("is_shop")+"")?true:false;
+        if(isShop) {
+            resultMap.put("key", "1");// 钥匙 跳转的页面
+        }else{
+            resultMap.put("key", "2");// 钥匙 跳转的页面
+        }
         String code = reqMap.get("code").toString();
         // 1.传递授权code及相关参数，调用微信验证code接口
-        JSONObject getCodeResultJson = WeiXinUtil.getUserInfoByCode(code);
+        JSONObject getCodeResultJson = WeiXinUtil.getUserInfoByCode(code,isShop);
         if (getCodeResultJson == null || getCodeResultJson.getInteger("errcode") != null
                 || getCodeResultJson.getString("openid") == null) {
             if (getCodeResultJson.getString("openid") == null) {
@@ -621,7 +638,7 @@ public class UserServerImpl extends AbstractQNLiveServer {
                 reqMap.put("province", userJson.get("province"));
             if(userJson.get("city")!=null)
                 reqMap.put("city", userJson.get("city"));
-            Map<String, String> dbResultMap = userModuleServer.initializeRegisterUser(reqMap);
+            Map<String, String> dbResultMap = userModuleServer.initializeRegisterUser(reqMap,isShop);
 
             // 生成access_token，将相关信息放入缓存，构造返回参数
             processLoginSuccess(1, dbResultMap, null, resultMap);

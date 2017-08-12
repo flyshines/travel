@@ -133,6 +133,115 @@
       </if>
     </trim>
   </insert>
+  <insert id="insertShop" parameterType="hashmap" >
+    insert into t_user_shop
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="user_id != null" >
+        user_id,
+      </if>
+      <if test="user_name != null" >
+        user_name,
+      </if>
+      <if test="nick_name != null" >
+        nick_name,
+      </if>
+      <if test="avatar_address != null" >
+        avatar_address,
+      </if>
+      <if test="phone_number != null" >
+        phone_number,
+      </if>
+      <if test="gender != null" >
+        gender,
+      </if>
+      <if test="country != null" >
+        country,
+      </if>
+      <if test="province != null" >
+        province,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="district != null" >
+        district,
+      </if>
+      <if test="area != null" >
+        area,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="plateform != null" >
+        plateform,
+      </if>
+      <if test="last_login_time != null" >
+        last_login_time,
+      </if>
+      <if test="last_login_ip != null" >
+        last_login_ip,
+      </if>
+      <if test="create_time != null" >
+        create_time,
+      </if>
+      <if test="update_time != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="user_id != null" >
+        #{user_id},
+      </if>
+      <if test="user_name != null" >
+        #{user_name},
+      </if>
+      <if test="nick_name != null" >
+        #{nick_name},
+      </if>
+      <if test="avatar_address != null" >
+        #{avatar_address},
+      </if>
+      <if test="phone_number != null" >
+        #{phone_number},
+      </if>
+      <if test="gender != null" >
+        #{gender},
+      </if>
+      <if test="country != null" >
+        #{country},
+      </if>
+      <if test="province != null" >
+        #{province},
+      </if>
+      <if test="city != null" >
+        #{city},
+      </if>
+      <if test="district != null" >
+        #{district},
+      </if>
+      <if test="area != null" >
+        #{area},
+      </if>
+      <if test="status != null" >
+        #{status},
+      </if>
+      <if test="plateform != null" >
+        #{plateform},
+      </if>
+      <if test="last_login_time != null" >
+        #{last_login_time},
+      </if>
+      <if test="last_login_ip != null" >
+        #{last_login_ip},
+      </if>
+      <if test="create_time != null" >
+        #{create_time},
+      </if>
+      <if test="update_time != null" >
+        #{update_time},
+      </if>
+    </trim>
+  </insert>
 
   <update id="updateUser" parameterType="hashmap">
     update t_user

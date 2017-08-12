@@ -245,6 +245,16 @@
                 <outputs>
                 </outputs>
             </function>
+            <function name="getWeiXinShopConfiguration">
+                <auth>
+                    <accessToken require="N"/>
+                </auth>
+                <inputs>
+                    <param name="url" type="string" require="Y,000100"/>
+                </inputs>
+                <outputs>
+                </outputs>
+            </function>
 
             <function name="getMyCourseList">
                 <auth>

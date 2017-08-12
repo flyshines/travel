@@ -45,10 +45,14 @@ public class WeiXinUtil {
 
     //获得微信素材多媒体URL
     public static String get_media_url = MiscUtils.getConfigByKey("get_media_url");
-
+    //H5
     private static final String appid = MiscUtils.getConfigByKey("appid");
     private static final String redirect_uri = MiscUtils.getConfigByKey("redirect_url");
     private static final String appsecret = MiscUtils.getConfigByKey("appsecret");
+    //商户平台
+    private static final String appid_shop = MiscUtils.getConfigByKey("appid_shop");
+    private static final String redirect_uri_shop = MiscUtils.getConfigByKey("redirect_url_shop");
+    private static final String appsecret_shop = MiscUtils.getConfigByKey("appsecret_shop");
     private final static String weixin_template_push_url = MiscUtils.getConfigByKey("weixin_template_push_url");//"https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN";
 
     /**
@@ -119,8 +123,8 @@ public class WeiXinUtil {
 
 
 
-    public static JSONObject getUserInfoByCode(String code) {
-        String requestUrl = get_user_info_by_code_url.replace("APPID", appid).replace("APPSECRET", appsecret).replace("CODE", code);
+    public static JSONObject getUserInfoByCode(String code, boolean isShop) {
+        String requestUrl = get_user_info_by_code_url.replace("APPID", isShop?appid_shop:appid).replace("APPSECRET", isShop?appsecret_shop:appsecret).replace("CODE", code);
         log.debug("------微信--通过H5传递code获得access_token-请求URL  "+requestUrl);
         String requestResult = HttpTookit.doGet(requestUrl);
         JSONObject jsonObject = JSON.parseObject(requestResult);
@@ -208,6 +212,37 @@ public class WeiXinUtil {
         }
         return jsApiTicket;
     }
+    /**
+     * 获取jsapi_ticket
+     * @return
+     */
+    public static String getJSSHOPTIcket(Jedis jedis){
+        String jsApiTicket = null;
+        jsApiTicket = jedis.get(Constants.CACHED_KEY_WEIXIN_JS_API_TIKET_SHOP);
+        if(jsApiTicket == null){
+            String accessToken = getAccessToken(appid_shop, appsecret_shop, jedis).getToken();
+            int result = 0;
+
+            //拼装创建菜单Url
+            String url =  jsapi_ticket_url.replace("ACCESS_TOKEN", accessToken);
+            //调用接口获取jsapi_ticket
+            String requestResult = HttpTookit.doGet(url);
+            JSONObject jsonObject = JSON.parseObject(requestResult);
+            // 如果请求成功
+            if (null != jsonObject) {
+                try {
+                    jsApiTicket = jsonObject.getString("ticket");
+                    jedis.setex(Constants.CACHED_KEY_WEIXIN_JS_API_TIKET_SHOP, 7000, jsApiTicket);
+                } catch (JSONException e) {
+                    if (0 != jsonObject.getInteger("errcode")) {
+                        result = jsonObject.getInteger("errcode");
+                        log.error("JSAPI_Ticket获取失败 errcode:{} errmsg:{}", jsonObject.getInteger("errcode"), jsonObject.getString("errmsg"));
+                    }
+                }
+            }
+        }
+        return jsApiTicket;
+    }
 
     //获取计算后的signature，及其它字段 noncestr,timestamp,jsapi_ticket
     public static Map<String, String> sign(String jsapi_ticket, String url) {
@@ -247,6 +282,46 @@ public class WeiXinUtil {
         ret.put("signature", signature);
         ret.put("appId", appid);
         ret.put("redirect_uri", redirect_uri);
+
+        return ret;
+    }    //获取计算后的signature，及其它字段 noncestr,timestamp,jsapi_ticket
+    public static Map<String, String> signForShop(String jsapi_ticket, String url) {
+        Map<String, String> ret = new HashMap<String, String>();
+        String nonce_str = MiscUtils.getUUId();
+        String timestamp = System.currentTimeMillis()/1000 + "";
+        String string1;
+        String signature = "";
+
+        //注意这里参数名必须全部小写，且必须有序
+        string1 = "jsapi_ticket=" + jsapi_ticket +
+                "&noncestr=" + nonce_str +
+                "&timestamp=" + timestamp +
+                "&url=" + url;
+        System.out.println(string1);
+
+        try
+        {
+            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+            crypt.reset();
+            crypt.update(string1.getBytes("UTF-8"));
+            signature = byteToHex(crypt.digest());
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            e.printStackTrace();
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        }
+
+//        ret.put("url", url);
+//        ret.put("jsapi_ticket", jsapi_ticket);
+        ret.put("nonceStr", nonce_str);
+        ret.put("timestamp", timestamp);
+        ret.put("signature", signature);
+        ret.put("appId", appid_shop);
+        ret.put("redirect_uri", redirect_uri_shop);
 
         return ret;
     }

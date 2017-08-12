@@ -71,6 +71,59 @@ public class WebchatController extends AbstractController {
 		response.sendRedirect(authorizationUrl);
 		return ;
 	}
+	/**
+	 * 微信公众号授权后的回调
+	 * 前端 默认进行 微信静默授权
+	 *  授权回调进入后台在后台获取code进行判断时候获取 openid
+	 *  如果有就进行正常跳转
+	 *  如果没有就进行手动授权
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/weixin/shop/weixinlogin", method = RequestMethod.GET)
+	public void weixinShopLogin(HttpServletRequest request,HttpServletResponse response) throws Exception {
+
+		StringBuffer url = request.getRequestURL();//获取路径
+		Map<String, String[]> params = request.getParameterMap();
+		String[] codes = params.get("code");//拿到的code的值
+		String code = codes[0];
+		Map<String,String> map = new HashMap<>();
+		map.put("code",code);
+		String remote_ip_address = ServerUtils.getIpAddr(request);
+		if("0:0:0:0:0:0:0:1".equals(remote_ip_address)){
+			remote_ip_address = "127.0.0.1";
+		}
+		map.put("last_login_ip",remote_ip_address);
+		//商户标识
+		map.put("is_shop","1");
+		RequestEntity requestEntity = this.createRequestEntity("UserServer", "weixinCodeUserLogin", null, "");
+		requestEntity.setParam(map);
+		ResponseEntity responseEntity = this.process(requestEntity, serviceManger, message);
+		Map<String, Object> resultMap = (Map<String, Object>) responseEntity.getReturnData();
+
+		Integer key = Integer.valueOf(resultMap.get("key").toString());
+		if(key == 1){
+			//正常跳转到首页
+			String userWeixinAccessToken = (String) resultMap.get("access_token");
+			response.sendRedirect(MiscUtils.getConfigByKey("web_index")+userWeixinAccessToken);
+			return ;
+		}else if(key == 2){
+			//正常跳转到商户后台首页
+			String userWeixinAccessToken = (String) resultMap.get("access_token");
+			response.sendRedirect(MiscUtils.getConfigByKey("shop_index")+userWeixinAccessToken);
+			return ;
+		}
+
+		//如果没有拿到
+		logger.info("没有拿到openId 或者 unionid 跳到手动授权页面");
+		String authorization_url = MiscUtils.getConfigByKey("authorization_url");//手动授权url
+		String appid = MiscUtils.getConfigByKey("appid");
+		String redireceUrl = MiscUtils.getConfigByKey("redirect_url");
+		String authorizationUrl = authorization_url.replace("APPID", appid).replace("REDIRECTURL", redireceUrl);//修改参数
+		response.sendRedirect(authorizationUrl);
+		return ;
+	}
 
 	/**
 	 * 生成微信支付单
@@ -146,6 +199,24 @@ public class WebchatController extends AbstractController {
             @RequestHeader("version") String version
     ) throws Exception {
         RequestEntity requestEntity = this.createRequestEntity("UserServer", "weiXinConfiguration", null, version);
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("url", url);
+        requestEntity.setParam(param);
+        return this.process(requestEntity, serviceManger, message);
+    }
+	/**
+     * 获得微信JS端配置
+     * @param version
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/weixin/shop/configuration", method = RequestMethod.GET)
+    public @ResponseBody
+    ResponseEntity getWeiXinShopConfiguration(
+            @RequestParam(value = "url", defaultValue = "") String url,
+            @RequestHeader("version") String version
+    ) throws Exception {
+        RequestEntity requestEntity = this.createRequestEntity("UserServer", "getWeiXinShopConfiguration", null, version);
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("url", url);
         requestEntity.setParam(param);

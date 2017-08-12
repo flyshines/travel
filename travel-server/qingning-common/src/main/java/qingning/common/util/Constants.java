@@ -109,6 +109,7 @@ public final class Constants {
 
 	public static final String CACHED_KEY_WEIXIN_TOKEN="SYS:WEIXIN:TOKEN";
 	public static final String CACHED_KEY_WEIXIN_JS_API_TIKET="SYS:WEIXIN:JS_API_TIKET";
+	public static final String CACHED_KEY_WEIXIN_JS_API_TIKET_SHOP="SYS:WEIXIN:JS_API_TIKET_SHOP";
 
 	public static final String CACHED_KEY_USER_NICK_NAME_INCREMENT_NUM="SYS:USER_NICK_NAME_INCREMENT_NUM";
 	public static final String CACHED_KEY_APP_VERSION_INFO_FIELD = "os";
@@ -116,6 +117,7 @@ public final class Constants {
 
 
 	public static final String USER_ROLE_NORMAL="user";
+	public static final String USER_ROLE_SHOP="shop";
 
 
 

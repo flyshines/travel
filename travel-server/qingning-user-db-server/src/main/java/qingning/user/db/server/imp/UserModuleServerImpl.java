@@ -92,7 +92,7 @@ public class UserModuleServerImpl implements IUserModuleServer {
 
     @Transactional(rollbackFor=Exception.class)
     @Override
-    public Map<String, String> initializeRegisterUser(Map<String, Object> reqMap) {
+    public Map<String, String> initializeRegisterUser(Map<String, Object> reqMap, boolean isShop) {
         //1.插入t_user
         Date now = new Date();
         Map<String,Object> user = new HashMap<String,Object>();
@@ -117,7 +117,11 @@ public class UserModuleServerImpl implements IUserModuleServer {
             user.put("city", reqMap.get("city"));
 
         //位置信息未插入由消息服务处理
-        userMapper.insertUser(user);
+        if(isShop){
+            userMapper.insertShop(user);
+        }else{
+            userMapper.insertUser(user);
+        }
 
         //2.插入login_info
         Map<String,Object> loginInfo = new HashMap<String,Object>();
@@ -136,7 +140,7 @@ public class UserModuleServerImpl implements IUserModuleServer {
             loginInfo.put("web_openid",reqMap.get("web_openid"));
         }
         loginInfo.put("phone_number", reqMap.get("phone_number"));
-        loginInfo.put("user_role", Constants.USER_ROLE_NORMAL);
+        loginInfo.put("user_role", isShop?Constants.USER_ROLE_SHOP:Constants.USER_ROLE_NORMAL);
         //位置信息未插入由消息服务处理
         loginInfo.put("create_time", now);
         loginInfo.put("update_time", now);
