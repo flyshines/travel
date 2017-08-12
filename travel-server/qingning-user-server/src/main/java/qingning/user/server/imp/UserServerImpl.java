@@ -696,10 +696,6 @@ public class UserServerImpl extends AbstractQNLiveServer {
 
         Map<String, String> payResultMap = TenPayUtils.sendPrePay(payGoodName, totalFee, terminalIp, outTradeNo, openid, null,attach);
 
-        //Map<String, String> payResultMap = new HashMap<>();
-        payResultMap.put("prepay_id",System.currentTimeMillis()+"");
-        payResultMap.put("random_char","random_char");
-
         //5.处理生成微信预付单接口
         if (payResultMap.get("return_code").equals("FAIL")) {
             //更新交易表
