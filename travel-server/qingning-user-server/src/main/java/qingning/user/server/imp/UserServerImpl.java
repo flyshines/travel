@@ -538,9 +538,9 @@ public class UserServerImpl extends AbstractQNLiveServer {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         boolean isShop = "1".equals(reqMap.get("is_shop")+"")?true:false;
         if(isShop) {
-            resultMap.put("key", "1");// 钥匙 跳转的页面
-        }else{
             resultMap.put("key", "2");// 钥匙 跳转的页面
+        }else{
+            resultMap.put("key", "1");// 钥匙 跳转的页面
         }
         String code = reqMap.get("code").toString();
         // 1.传递授权code及相关参数，调用微信验证code接口
