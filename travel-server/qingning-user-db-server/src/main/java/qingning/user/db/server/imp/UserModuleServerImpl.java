@@ -141,8 +141,9 @@ public class UserModuleServerImpl implements IUserModuleServer {
         loginInfo.put("create_time", now);
         loginInfo.put("update_time", now);
         loginInfoMapper.insertLoginInfo(loginInfo);
-
-        return null;
+        Map<String,String> result = new HashMap<>();
+        result.put("user_id",uuid);
+        return result;
     }
 
 
