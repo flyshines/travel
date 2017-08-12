@@ -363,7 +363,7 @@
                 </auth>
                 <inputs>
                     <param name="bill_type" type="string" require="Y,000100" format="^[0-1]$,120011"/>
-                    <param name="ticket_id" type="string"/>
+                    <param name="ticket_id" type="string" default="1" require="N"/>
                 </inputs>
                 <outputs>
                     <param name="appId" type="string"/>
