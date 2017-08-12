@@ -744,7 +744,6 @@ public class UserServerImpl extends AbstractQNLiveServer {
         String resultStr = TenPayConstant.FAIL;// 默认失败
         SortedMap<String, String> requestMapData = (SortedMap<String, String>) reqEntity.getParam();
         String tradeId = requestMapData.get("out_trade_no");
-
         //获得支付类型
         JSONObject attachJsonObj = JSONObject.parseObject(requestMapData.get("attach"));
         String profitType = attachJsonObj.getString("profit_type");
@@ -783,7 +782,14 @@ public class UserServerImpl extends AbstractQNLiveServer {
                     vipInfo.put("user_id",userId);
                     vipInfo.put("create_time",now);
                     vipInfo.put("close_time",MiscUtils.getYearLater(now));
+                    String uuid = MiscUtils.getOrderId();
+                    vipInfo.put("sign",uuid);
                     userModuleServer.insertVipUser(vipInfo);
+
+                    Map<String,Object> query = new HashMap<>();
+                    query.put(Constants.CACHED_KEY_USER_FIELD, userId);
+                    String key = MiscUtils.getKeyOfCachedData(Constants.CACHED_KEY_USER, query);
+                    jedis.hset(key,"sign",uuid);
 
                     // 生成分销者收益通知
                     /*insertMap.clear();

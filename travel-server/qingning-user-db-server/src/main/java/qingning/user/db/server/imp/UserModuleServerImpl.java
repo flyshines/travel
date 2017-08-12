@@ -279,7 +279,6 @@ public class UserModuleServerImpl implements IUserModuleServer {
             userInfo.remove("create_time");
             return userMapper.updateVipUser(userInfo);
         }else{
-            vipInfo.put("sign",MiscUtils.getOrderId());
             return userMapper.insertVipUser(vipInfo);
         }
     }
