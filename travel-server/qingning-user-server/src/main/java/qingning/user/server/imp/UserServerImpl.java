@@ -561,8 +561,8 @@ public class UserServerImpl extends AbstractQNLiveServer {
                 }
                 throw new QNLiveException("120008");
             }
-
-            queryMap.clear();
+            //公众平台unionid校验
+            /*queryMap.clear();
             queryMap.put("login_type", "0");// 0.微信方式登录
             queryMap.put("login_id", userJson.getString("unionid"));
             Map<String, Object> loginInfoMapFromUnionid = userModuleServer.getLoginInfoByLoginIdAndLoginType(queryMap);
@@ -574,7 +574,7 @@ public class UserServerImpl extends AbstractQNLiveServer {
                 userModuleServer.updateUserWebOpenIdByUserId(updateMap);
                 processLoginSuccess(2, null, loginInfoMapFromUnionid, resultMap);
                 return resultMap;
-            }
+            }*/
 
             String nickname = userJson.getString("nickname");
             String sex = userJson.getString("sex");
@@ -615,6 +615,9 @@ public class UserServerImpl extends AbstractQNLiveServer {
             reqMap.put("unionid", unionid);
             reqMap.put("web_openid", openid);
             reqMap.put("login_type", "4");
+            reqMap.put("country", userJson.get("country"));
+            reqMap.put("province", userJson.get("province"));
+            reqMap.put("city", userJson.get("city"));
             Map<String, String> dbResultMap = userModuleServer.initializeRegisterUser(reqMap);
 
             // 生成access_token，将相关信息放入缓存，构造返回参数
