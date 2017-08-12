@@ -85,8 +85,9 @@ public class UserServerImpl extends AbstractQNLiveServer {
         resultMap.put("is_vip", sign!=null?1:0);
         resultMap.put("invalid_time", new Date());
         resultMap.put("user_id", userId);
-
-        resultMap.put("rq_code",AESOperator.getInstance().encrypt(System.currentTimeMillis()+sign));
+        if(sign!=null){
+            resultMap.put("rq_code",AESOperator.getInstance().encrypt(System.currentTimeMillis()+sign));
+        }
 
         return resultMap;
     }
@@ -128,7 +129,7 @@ public class UserServerImpl extends AbstractQNLiveServer {
         if(signAll!=null){
             long time = Long.valueOf(signAll.substring(0,13));
             long now = System.currentTimeMillis();
-            if(now-time>1000000){
+            if(now-time>300){
                 //sign过期
                 throw new QNLiveException("210008");
             }else{
