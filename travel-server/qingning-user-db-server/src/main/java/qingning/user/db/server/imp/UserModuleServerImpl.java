@@ -108,6 +108,14 @@ public class UserModuleServerImpl implements IUserModuleServer {
         user.put("course_num", 0);	//新注册用户已购买课程为0
         user.put("create_time", now);
         user.put("update_time", now);
+
+        if(reqMap.get("country")!=null)
+            user.put("country", reqMap.get("country"));
+        if(reqMap.get("province")!=null)
+            user.put("province", reqMap.get("province"));
+        if(reqMap.get("city")!=null)
+            user.put("city", reqMap.get("city"));
+
         //位置信息未插入由消息服务处理
         userMapper.insertUser(user);
 

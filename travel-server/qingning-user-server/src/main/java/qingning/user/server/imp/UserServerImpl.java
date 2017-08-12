@@ -615,9 +615,12 @@ public class UserServerImpl extends AbstractQNLiveServer {
             reqMap.put("unionid", unionid);
             reqMap.put("web_openid", openid);
             reqMap.put("login_type", "4");
-            reqMap.put("country", userJson.get("country"));
-            reqMap.put("province", userJson.get("province"));
-            reqMap.put("city", userJson.get("city"));
+            if(userJson.get("country")!=null)
+                reqMap.put("country", userJson.get("country"));
+            if(userJson.get("province")!=null)
+                reqMap.put("province", userJson.get("province"));
+            if(userJson.get("city")!=null)
+                reqMap.put("city", userJson.get("city"));
             Map<String, String> dbResultMap = userModuleServer.initializeRegisterUser(reqMap);
 
             // 生成access_token，将相关信息放入缓存，构造返回参数
