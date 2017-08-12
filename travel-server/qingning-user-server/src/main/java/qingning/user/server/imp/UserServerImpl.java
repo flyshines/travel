@@ -657,7 +657,7 @@ public class UserServerImpl extends AbstractQNLiveServer {
     @FunctionName("generateWeixinPayBill")
     public Map<String, String> generateWeixinPayBill(RequestEntity reqEntity) throws Exception {
         Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
-
+        Jedis jedis = jedisUtils.getJedis();
         Map<String, Object> insertMap = new HashMap<>();
         String tradeId = MiscUtils.getWeiXinId();//TODO
         insertMap.put("trade_id", tradeId);
@@ -684,12 +684,14 @@ public class UserServerImpl extends AbstractQNLiveServer {
         userModuleServer.insertTradeBill(insertMap);
         Map<String, Object> query = new HashMap<>();
         query.put(Constants.CACHED_KEY_ACCESS_TOKEN_FIELD, reqEntity.getAccessToken());
-        //String key = MiscUtils.getKeyOfCachedData(Constants.CACHED_KEY_ACCESS_TOKEN, query);
+        String key = MiscUtils.getKeyOfCachedData(Constants.CACHED_KEY_ACCESS_TOKEN, query);
+        Map<String, String> userMap = jedis.hgetAll(key);
 
         //4.调用微信生成预付单接口
         String terminalIp = reqMap.get("remote_ip_address").toString();
         String outTradeNo = tradeId;
-        String openid = null;
+        String openid  = userMap.get("web_openid");
+
         String attach = "{profit_type:" + billType + "}";
 
         Map<String, String> payResultMap = TenPayUtils.sendPrePay(payGoodName, totalFee, terminalIp, outTradeNo, openid, null,attach);
