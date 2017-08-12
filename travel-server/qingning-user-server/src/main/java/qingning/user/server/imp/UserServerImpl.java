@@ -763,7 +763,7 @@ public class UserServerImpl extends AbstractQNLiveServer {
 			return TenPayConstant.SUCCESS;
 		}
 
-        if (!TenPayUtils.isValidSign(requestMapData)) {// MD5签名成功
+        if (TenPayUtils.isValidSign(requestMapData)) {// MD5签名成功
             logger.debug(" ===> 微信notify Md5 验签成功 <=== ");
             if ("SUCCESS".equals(requestMapData.get("return_code"))
                     && "SUCCESS".equals(requestMapData.get("result_code"))) {
