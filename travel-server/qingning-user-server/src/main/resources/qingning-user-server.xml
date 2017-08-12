@@ -50,14 +50,13 @@
                     <param name="page_size" type="long" require="N"/>
                 </inputs>
                 <outputs>
-                    <param name="total_count" type="string"/>
-                    <param name="total_page" type="string"/>
                     <param name="list" type="list">
                         <param name="place_id" default="0" fieldname="shop_id" type="string"/>
                         <param name="place_name" fieldname="shop_name" type="string"/>
                     </param>
                     <param name="total_count" type="long" />
                     <param name="total_page" type="long" />
+                    <param name="total_vip" type="int" />
                 </outputs>
             </function>
             <!--商户扫码-->

@@ -102,8 +102,8 @@ public class UserServerImpl extends AbstractQNLiveServer {
     @FunctionName("shopList")
     public Map<String, Object> shopList(RequestEntity reqEntity) throws Exception {
         Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
-        Map<String, Object> userList = userModuleServer.getShopList(reqMap);
-        return userList;
+        Map<String, Object> resMap = userModuleServer.getShopList(reqMap);
+        return resMap;
 
     }
 

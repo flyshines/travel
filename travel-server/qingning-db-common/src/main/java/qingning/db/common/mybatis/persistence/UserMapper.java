@@ -50,4 +50,9 @@ public interface UserMapper {
      * @return
      */
     PageList<Map<String,Object>> selectUserList(Map<String, Object> param, PageBounds page);
+
+    /**会员数量
+     * @return
+     */
+    int selectCountVipUser();
 }

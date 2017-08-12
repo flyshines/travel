@@ -405,6 +405,13 @@
     </if>
     ORDER BY is_over asc,t.create_time desc
   </select>
+  <!-- 会员数量 -->
+  <select id="selectCountVipUser" resultType="java.lang.Integer">
+    SELECT
+        count(*)
+    FROM
+        t_user_vip
+  </select>
   <!-- 更新后台账户所有字段 -->
   <update id="updateAdminUserByAllMap" parameterType="hashmap">
     update t_admin_user set last_login_time = #{last_login_time}, last_login_ip = #{last_login_ip},
