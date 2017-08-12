@@ -684,7 +684,7 @@ public class UserServerImpl extends AbstractQNLiveServer {
         userModuleServer.insertTradeBill(insertMap);
         Map<String, Object> query = new HashMap<>();
         query.put(Constants.CACHED_KEY_ACCESS_TOKEN_FIELD, reqEntity.getAccessToken());
-        String key = MiscUtils.getKeyOfCachedData(Constants.CACHED_KEY_ACCESS_TOKEN, query);
+        //String key = MiscUtils.getKeyOfCachedData(Constants.CACHED_KEY_ACCESS_TOKEN, query);
 
         //4.调用微信生成预付单接口
         String terminalIp = reqMap.get("remote_ip_address").toString();
@@ -692,14 +692,14 @@ public class UserServerImpl extends AbstractQNLiveServer {
         String openid = null;
         String attach = "{profit_type:" + billType + "}";
 
-        //Map<String, String> payResultMap = TenPayUtils.sendPrePay(payGoodName, totalFee, terminalIp, outTradeNo, openid, null,attach);
+        Map<String, String> payResultMap = TenPayUtils.sendPrePay(payGoodName, totalFee, terminalIp, outTradeNo, openid, null,attach);
 
-        Map<String, String> payResultMap = new HashMap<>();
+        //Map<String, String> payResultMap = new HashMap<>();
         payResultMap.put("prepay_id",System.currentTimeMillis()+"");
         payResultMap.put("random_char","random_char");
 
         //5.处理生成微信预付单接口
-        /*if (payResultMap.get("return_code").equals("FAIL")) {
+        if (payResultMap.get("return_code").equals("FAIL")) {
             //更新交易表
             Map<String, Object> failUpdateMap = new HashMap<>();
             failUpdateMap.put("status", "3");
@@ -707,7 +707,7 @@ public class UserServerImpl extends AbstractQNLiveServer {
             failUpdateMap.put("trade_id", tradeId);
             userModuleServer.closeTradeBill(failUpdateMap);
             throw new QNLiveException("120015",payResultMap.get("err_code_des")+":"+payResultMap.get("return_msg"));
-        } else {*/
+        } else {
             //成功，则需要插入支付表
             Map<String, Object> insertPayMap = new HashMap<>();
             insertPayMap.put("payment_id", MiscUtils.getUUId());
@@ -729,7 +729,7 @@ public class UserServerImpl extends AbstractQNLiveServer {
             resultMap.put("paySign", paySign);
 
             return resultMap;
-        //}
+        }
     }
 
     /**
