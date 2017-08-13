@@ -118,8 +118,8 @@ public class WebchatController extends AbstractController {
 		//如果没有拿到
 		logger.info("没有拿到openId 或者 unionid 跳到手动授权页面");
 		String authorization_url = MiscUtils.getConfigByKey("authorization_url");//手动授权url
-		String appid = MiscUtils.getConfigByKey("appid");
-		String redireceUrl = MiscUtils.getConfigByKey("redirect_url");
+		String appid = MiscUtils.getConfigByKey("appid_shop");
+		String redireceUrl = MiscUtils.getConfigByKey("redirect_url_shop");
 		String authorizationUrl = authorization_url.replace("APPID", appid).replace("REDIRECTURL", redireceUrl);//修改参数
 		response.sendRedirect(authorizationUrl);
 		return ;
