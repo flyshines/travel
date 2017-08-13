@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 import qingning.common.entity.QNLiveException;
 import qingning.common.entity.RequestEntity;
 import qingning.common.util.*;
+import qingning.common.util.Base64;
 import qingning.server.AbstractQNLiveServer;
 import qingning.server.annotation.FunctionName;
 import qingning.server.rpc.manager.IUserModuleServer;
@@ -86,7 +87,9 @@ public class UserServerImpl extends AbstractQNLiveServer {
         resultMap.put("invalid_time", new Date());
         resultMap.put("user_id", userId);
         if(sign!=null){
-            resultMap.put("rq_code",AESOperator.getInstance().encrypt(System.currentTimeMillis()+sign));
+            String s = AESOperator.getInstance().encrypt(System.currentTimeMillis()+sign);
+            Base64.encode(s.getBytes());
+            resultMap.put("rq_code",s);
         }
 
         return resultMap;
@@ -136,6 +139,7 @@ public class UserServerImpl extends AbstractQNLiveServer {
         Map<String,Object> result = null;
         String userId = AccessTokenUtil.getUserIdFromAccessToken(reqEntity.getAccessToken());
         String code = reqMap.get("code").toString();
+        code = new String(Base64.decode(code));
         String signAll = AESOperator.getInstance().decrypt(code);
         Map<String,Object> param = new HashMap<>();
         param.put("check_user_id",userId);
