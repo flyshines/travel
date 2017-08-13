@@ -148,7 +148,7 @@ public class UserServerImpl extends AbstractQNLiveServer {
         if(signAll!=null){
             long time = Long.valueOf(signAll.substring(0,13));
             long now = System.currentTimeMillis();
-            if(now-time>300){
+            if(now-time>300000){
                 //sign过期
                 throw new QNLiveException("210008");
             }else{

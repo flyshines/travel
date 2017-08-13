@@ -138,7 +138,7 @@ public class Base64 {
 		/*String str = "EsBVKzMpMM8+67TFdGdpowakUjXAHqOyR89Hcb4aUERvXdTi6TK0cG6w0MtJzYZbfjxwHDGbwN9QDsR3tk9n3w==";
 		String b = encode(str.getBytes());
 		System.out.println(b);*/
-		byte by[] = decode("EsBVKzMpMM8+67TFdGdpowakUjXAHqOyR89Hcb4aUERvXdTi6TK0cG6w0MtJzYZbfjxwHDGbwN9QDsR3tk9n3w==");
+		byte by[] = decode("VXR2YjBmcXlCUGNoc1d4MkxlQUx6dTd5cm03eXVyYm5iY0hlT21VSEhRNEdI\r\nSm4rUGlLc3FwSDZ6bjErdk1Vek55YXdjVU15cTN3REJ2Z0pUWVpnL2c9PQ==");
 		System.out.println(new String(by));
 	}
 }
