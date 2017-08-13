@@ -415,7 +415,7 @@
   <!-- 更新后台账户所有字段 -->
   <update id="updateAdminUserByAllMap" parameterType="hashmap">
     update t_admin_user set last_login_time = #{last_login_time}, last_login_ip = #{last_login_ip},
-    login_num = login_num + #{login_num}, token = #{token}
+    login_num = login_num + 1, token = #{token}
     where user_id = #{user_id}
   </update>
 </mapper>

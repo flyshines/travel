@@ -5,7 +5,10 @@
 	<!-- 查询店铺信息 -->
 	<select id="selectShopList" resultType="hashmap" parameterType="hashmap">
 		SELECT * FROM t_shop shop
-		WHERE shop.status = '1'
+        WHERE 1=1
+        <if test="status != null">
+             and shop.status = #{status}
+        </if>
 	</select>
 	
 	<!-- 更新店铺信息 -->

@@ -103,6 +103,21 @@ public class UserServerImpl extends AbstractQNLiveServer {
     @FunctionName("shopList")
     public Map<String, Object> shopList(RequestEntity reqEntity) throws Exception {
         Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
+        reqMap.put("status","1");
+        Map<String, Object> resMap = userModuleServer.getShopList(reqMap);
+        return resMap;
+
+    }
+    /**
+     * 商户列表-后台
+     *
+     * @param reqEntity
+     * @return
+     * @throws Exception
+     */
+    @FunctionName("placeList")
+    public Map<String, Object> placeList(RequestEntity reqEntity) throws Exception {
+        Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
         Map<String, Object> resMap = userModuleServer.getShopList(reqMap);
         return resMap;
 
@@ -209,8 +224,6 @@ public class UserServerImpl extends AbstractQNLiveServer {
         Date now = new Date();
         adminUserMap.put("last_login_time", now);
         adminUserMap.put("last_login_ip", "");
-        adminUserMap.put("login_num", 1);    //用于sql执行+1
-
         /*
          * 判断是否需要生成token
          */

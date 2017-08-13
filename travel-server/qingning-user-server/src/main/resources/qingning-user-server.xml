@@ -48,6 +48,7 @@
                 <inputs>
                     <param name="page_num" type="long" require="N"/>
                     <param name="page_size" type="long" require="N"/>
+                    <param name="status" type="string" require="N"/>
                 </inputs>
                 <outputs>
                     <param name="list" type="list">
@@ -57,6 +58,27 @@
                     <param name="total_count" type="long" />
                     <param name="total_page" type="long" />
                     <param name="total_vip" type="int" />
+                </outputs>
+            </function>
+            <!--商户列表-后台-->
+            <function name="placeList">
+                <auth>
+                    <accessToken require="Y"/>
+                </auth>
+                <inputs>
+                    <param name="page_num" type="long" require="N"/>
+                    <param name="page_size" type="long" require="N"/>
+                    <param name="status" type="string" require="N"/>
+                </inputs>
+                <outputs>
+                    <param name="list" type="list">
+                        <param name="place_id" default="0" fieldname="shop_id" type="string"/>
+                        <param name="place_name" fieldname="shop_name" type="string"/>
+                        <param name="status" type="string"/>
+                        <param name="create_time" type="long"/>
+                    </param>
+                    <param name="total_count" type="long" />
+                    <param name="total_page" type="long" />
                 </outputs>
             </function>
             <!--商户扫码-->

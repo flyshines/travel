@@ -45,6 +45,38 @@ public class AdminController extends AbstractController{
 
 
 	/**
+	 * 收入列表
+	 *
+	 * @param version     版本号
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/place/list", method = RequestMethod.GET)
+	public
+	@ResponseBody
+	ResponseEntity placeList(
+			@RequestHeader("access_token") String accessToken,
+			@RequestParam(value = "keyword", defaultValue = "") String keyword,
+			@RequestParam(value = "page_num",defaultValue = "1")  String page_num,
+			@RequestParam(value = "page_size",defaultValue = "10")  String page_size,
+			@RequestHeader("version") String version
+	) throws Exception {
+		RequestEntity requestEntity = this.createRequestEntity("UserServer", "placeList", accessToken, version);
+		Map<String, Object> param = new HashMap<>();
+		if(StringUtils.isNotEmpty(keyword))
+			param.put("keyword", keyword);
+		param.put("page_num", page_num);
+		param.put("page_size", page_size);
+		requestEntity.setParam(param);
+		ResponseEntity responseEntity = this.process(requestEntity, serviceManger, message);
+		Map<String, Object> resultMap = (Map<String, Object>) responseEntity.getReturnData();
+		responseEntity.setReturnData(resultMap);
+
+		return responseEntity;
+	}
+
+
+	/**
 	 * 新增景区
 	 *
 	 * @param version     版本号
