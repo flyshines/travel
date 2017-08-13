@@ -171,9 +171,10 @@ public class UserServerImpl extends AbstractQNLiveServer {
                 param.put("create_time",new Date());
                 if(count>0){
                     userModuleServer.updateUserVisit(param);
+                }else{
+                    //插入访问记录
+                    userModuleServer.addUserVisit(param);
                 }
-                //插入访问记录
-                userModuleServer.addUserVisit(param);
                 result = new HashMap<>();
                 nickName = vipInfo.get("nick_name")+"";
                 result.put("nick_name",nickName);
