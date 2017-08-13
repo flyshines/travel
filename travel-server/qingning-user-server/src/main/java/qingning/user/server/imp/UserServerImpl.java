@@ -88,7 +88,7 @@ public class UserServerImpl extends AbstractQNLiveServer {
         resultMap.put("user_id", userId);
         if(sign!=null){
             String s = AESOperator.getInstance().encrypt(System.currentTimeMillis()+sign);
-            Base64.encode(s.getBytes());
+            s = Base64.encode(s.getBytes());
             resultMap.put("rq_code",s);
         }
 

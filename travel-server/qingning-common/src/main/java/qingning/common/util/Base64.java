@@ -135,10 +135,10 @@ public class Base64 {
 		return bos.toByteArray();
 	}
 	public static void main(String args[]){
-		String str = "1++++2";
+		/*String str = "EsBVKzMpMM8+67TFdGdpowakUjXAHqOyR89Hcb4aUERvXdTi6TK0cG6w0MtJzYZbfjxwHDGbwN9QDsR3tk9n3w==";
 		String b = encode(str.getBytes());
-		System.out.println(b);
-		byte by[] = decode(b);
+		System.out.println(b);*/
+		byte by[] = decode("EsBVKzMpMM8+67TFdGdpowakUjXAHqOyR89Hcb4aUERvXdTi6TK0cG6w0MtJzYZbfjxwHDGbwN9QDsR3tk9n3w==");
 		System.out.println(new String(by));
 	}
 }
