@@ -73,7 +73,7 @@ public class UserController extends AbstractController{
 	public
 	@ResponseBody
 	ResponseEntity shopList(
-			@RequestParam(value = "page_size", defaultValue = "10") long pageSize,
+			@RequestParam(value = "page_size", defaultValue = "100") long pageSize,
 			@RequestParam(value = "page_num", defaultValue = "1") long pageNum,
 			@RequestHeader("access_token") String accessToken,
 			@RequestHeader("version") String version

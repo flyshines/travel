@@ -501,7 +501,7 @@ public class UserServerImpl extends AbstractQNLiveServer {
     public Map<String, String> getWeiXinShopConfiguration(RequestEntity reqEntity) throws Exception {
         Map<String, Object> reqMap = (Map<String, Object>) reqEntity.getParam();
         String JSApiTIcket = WeiXinUtil.getJSSHOPTIcket(jedisUtils.getJedis());
-        return WeiXinUtil.sign(JSApiTIcket, reqMap.get("url").toString());
+        return WeiXinUtil.signForShop(JSApiTIcket, reqMap.get("url").toString());
     }
 
 
