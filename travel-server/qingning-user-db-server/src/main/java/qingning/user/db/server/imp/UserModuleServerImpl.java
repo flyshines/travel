@@ -349,4 +349,9 @@ public class UserModuleServerImpl implements IUserModuleServer {
         res.put("total_page",result.getPaginator().getTotalPages());
         return res;
     }
+
+    @Override
+    public int updateUserVisit(Map<String, Object> param) {
+        return userMapper.updateVisitCount(param);
+    }
 }

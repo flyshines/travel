@@ -211,4 +211,10 @@ public interface IUserModuleServer {
 	 * @return
 	 */
 	Map<String,Object> getUserList(Map<String, Object> param);
+
+	/**更新进入园区次数
+	 * @param param
+	 * @return
+	 */
+	int updateUserVisit(Map<String, Object> param);
 }

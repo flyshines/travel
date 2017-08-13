@@ -55,4 +55,10 @@ public interface UserMapper {
      * @return
      */
     int selectCountVipUser();
+
+    /**更新进入园区次数
+     * @param param
+     * @return
+     */
+    int updateVisitCount(Map<String, Object> param);
 }

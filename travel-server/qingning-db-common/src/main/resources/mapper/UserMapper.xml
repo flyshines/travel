@@ -23,6 +23,13 @@
     </if>
     where user_id = #{user_id}
   </update>
+  <update id="updateVisitCount" parameterType="hashmap" >
+    update t_user_visit
+    set visit_times = visit_times + 1
+    where user_id = #{user_id}
+    AND shop_id = #{shop_id}
+    AND create_date = CURDATE()
+  </update>
   
   <insert id="insertUser" parameterType="hashmap" >
     insert into t_user

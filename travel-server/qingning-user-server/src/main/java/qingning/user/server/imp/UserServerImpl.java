@@ -163,9 +163,8 @@ public class UserServerImpl extends AbstractQNLiveServer {
                 int count = userModuleServer.getUserVisitCount(vipInfo.get("user_id").toString(),reqMap.get("place_id").toString());
 
                 if(count>0){
-                    throw new QNLiveException("210011");
+                    userModuleServer.updateUserVisit(param);
                 }
-
                 param.put("sign",sign);
                 param.put("user_id",vipInfo.get("user_id"));
                 param.put("create_time",new Date());
