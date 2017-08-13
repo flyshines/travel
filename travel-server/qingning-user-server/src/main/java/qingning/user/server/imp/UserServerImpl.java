@@ -162,12 +162,12 @@ public class UserServerImpl extends AbstractQNLiveServer {
                 //今日入园次数
                 int count = userModuleServer.getUserVisitCount(vipInfo.get("user_id").toString(),reqMap.get("place_id").toString());
 
-                if(count>0){
-                    userModuleServer.updateUserVisit(param);
-                }
                 param.put("sign",sign);
                 param.put("user_id",vipInfo.get("user_id"));
                 param.put("create_time",new Date());
+                if(count>0){
+                    userModuleServer.updateUserVisit(param);
+                }
                 //插入访问记录
                 userModuleServer.addUserVisit(param);
                 result = new HashMap<>();
