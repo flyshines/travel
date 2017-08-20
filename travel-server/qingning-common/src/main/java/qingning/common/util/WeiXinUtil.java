@@ -118,7 +118,7 @@ public class WeiXinUtil {
                     accessToken = new AccessToken();
                     accessToken.setToken(jsonObject.getString("access_token"));
                     accessToken.setExpiresIn(jsonObject.getInteger("expires_in"));
-                    jedis.setex(Constants.CACHED_KEY_WEIXIN_TOKEN, 7000,jsonObject.getString("access_token"));
+                    jedis.setex(Constants.CACHED_KEY_WEIXIN_TOKEN_SHOP, 7000,jsonObject.getString("access_token"));
                 } catch (JSONException e) {
                     accessToken = null;
                     // 获取token失败
@@ -128,7 +128,7 @@ public class WeiXinUtil {
         }else {
             accessToken = new AccessToken();
             accessToken.setToken(token);
-            accessToken.setExpiresIn(jedis.ttl(Constants.CACHED_KEY_WEIXIN_TOKEN).intValue());
+            accessToken.setExpiresIn(jedis.ttl(Constants.CACHED_KEY_WEIXIN_TOKEN_SHOP).intValue());
         }
 
         return accessToken;
