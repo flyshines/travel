@@ -75,7 +75,7 @@
                         <param name="place_id" default="0" fieldname="shop_id" type="string"/>
                         <param name="place_name" fieldname="shop_name" type="string"/>
                         <param name="status" type="string"/>
-                        <param name="remark" type="string"/>
+                        <param name="remark" fieldname="shop_remark" type="string"/>
                         <param name="place_image" fieldname="shop_image" type="string"/>
                         <param name="create_time" type="long"/>
                     </param>
