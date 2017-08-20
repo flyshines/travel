@@ -76,7 +76,7 @@
                         <param name="place_name" fieldname="shop_name" type="string"/>
                         <param name="status" type="string"/>
                         <param name="remark" type="string"/>
-                        <param name="shop_image" type="string"/>
+                        <param name="place_image" fieldname="shop_image" type="string"/>
                         <param name="create_time" type="long"/>
                     </param>
                     <param name="total_count" type="long" />
