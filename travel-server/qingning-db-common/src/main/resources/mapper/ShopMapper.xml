@@ -38,23 +38,6 @@
 	<select id="selectSystemConfig" resultType="hashmap" parameterType="hashmap">
 		SELECT * FROM t_system_config WHERE config_key = #{config_key}
 	</select>
-	
-	<!-- 分页获取店铺的客户统计，并关联查询客户信息 -->
-	<select id="selectCustomerStatistics" resultType="hashmap" parameterType="hashmap">
-	   SELECT customer.*, user.nick_name
-	   FROM t_shop_customer customer
-	   LEFT JOIN t_user user ON user.user_id = customer.user_id
-	   <where>
-	   	customer.shop_id = #{shop_id}
-	   	<if test="position != null and position != 0">
-	    	and customer.position <![CDATA[ < ]]> #{position}
-	    </if>
-	   </where>
-	   order by customer.position desc
-	   <if test="page_count != null">
-	   	limit #{page_count}
-	   </if>
-	</select>
 
   <select id="findByShopId" resultType="hashmap" parameterType="java.lang.String" >
     select * from t_shop where shop_id = #{shopId}
@@ -64,9 +47,6 @@
    <insert id="insertShop" parameterType="hashmap" >
     insert into t_shop
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="shop_id != null" >
-        shop_id,
-      </if>
       <if test="user_id != null" >
         user_id,
       </if>
@@ -99,9 +79,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="shop_id != null" >
-        #{shop_id},
-      </if>
       <if test="user_id != null" >
         #{user_id},
       </if>

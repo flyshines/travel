@@ -293,7 +293,6 @@ public class UserServerImpl extends AbstractQNLiveServer {
         String userId = AccessTokenUtil.getUserIdFromAccessToken(reqEntity.getAccessToken());
         param.put("create_user",userId);
         param.put("create_time",new Date());
-        param.put("shop_id",MiscUtils.getUUId());
         param.put("ticket_id","1");
         param.put("shop_remark",param.get("remark"));
         param.put("shop_name",param.get("place_name"));
