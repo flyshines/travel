@@ -104,7 +104,7 @@ public abstract class AbstractQNLiveServer implements QNSharingServer {
 			for(InputParameter inputParamter : functionInfo.getInputParameterList()){
 				Object value = inputParameterMap.get(inputParamter.getName());
 				if(inputParamter.isRequire() && MiscUtils.isEmpty(value)){
-					throw new QNLiveException(inputParamter.getRequireErrorCode());
+					throw new QNLiveException(inputParamter.getRequireErrorCode(),inputParamter.getName());
 				}
 
 				if(!MiscUtils.isEmpty(inputParamter.getFormat()) && !MiscUtils.isEmpty(value)){
