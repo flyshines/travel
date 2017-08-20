@@ -36,7 +36,7 @@ public class WebchatController extends AbstractController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/weixin/weixinlogin", method = RequestMethod.GET)
-	public void weixinLogin(HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public void weixinLogin(HttpServletRequest request,@RequestParam(value="key",defaultValue = "") String paramKey,HttpServletResponse response) throws Exception {
 
 		StringBuffer url = request.getRequestURL();//获取路径
 		Map<String, String[]> params = request.getParameterMap();
@@ -56,8 +56,12 @@ public class WebchatController extends AbstractController {
 
 		Integer key = Integer.valueOf(resultMap.get("key").toString());
 		if(key == 1){
-			//正常跳转到首页
 			String userWeixinAccessToken = (String) resultMap.get("access_token");
+			if("1".equals(paramKey)){
+				//分享
+				response.sendRedirect(MiscUtils.getConfigByKey("share_index")+userWeixinAccessToken);
+			}
+			//正常跳转到首页
 			response.sendRedirect(MiscUtils.getConfigByKey("web_index")+userWeixinAccessToken);
 			return ;
 		}
