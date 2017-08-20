@@ -60,9 +60,10 @@ public class WebchatController extends AbstractController {
 			if("1".equals(paramKey)){
 				//分享
 				response.sendRedirect(MiscUtils.getConfigByKey("share_index")+userWeixinAccessToken);
+			}else {
+				//正常跳转到首页
+				response.sendRedirect(MiscUtils.getConfigByKey("web_index") + userWeixinAccessToken);
 			}
-			//正常跳转到首页
-			response.sendRedirect(MiscUtils.getConfigByKey("web_index")+userWeixinAccessToken);
 			return ;
 		}
 
